@@ -8,7 +8,7 @@ import AdminLayout from './components/AdminLayout';
 import Dashboard from './pages/admin/Dashboard';
 import AddProject from './pages/admin/AddProject';
 import EditProject from './pages/admin/EditProject';
-import Leads from './pages/admin/leads';
+import Leads from './pages/admin/Leads';
 
 function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
