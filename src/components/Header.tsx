@@ -5,9 +5,9 @@ import {
   Phone,
   Menu,
   X,
-  ArrowRight
+  ArrowRight,
 } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const navLinks = [
   { label: 'Home', href: '/' },
@@ -21,7 +21,9 @@ const navLinks = [
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handler = () => {
@@ -39,6 +41,24 @@ export default function Header() {
     setMobileOpen(false);
   }, [location.pathname]);
 
+  // Scroll to section after navigation
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace('#', '');
+
+      setTimeout(() => {
+        const section = document.getElementById(id);
+
+        if (section) {
+          section.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        }
+      }, 300);
+    }
+  }, [location]);
+
   const scrollToSection = (id: string) => {
     const section = document.getElementById(id);
 
@@ -51,10 +71,22 @@ export default function Header() {
   };
 
   const handleNavClick = (href: string) => {
+    setMobileOpen(false);
+
     if (href.startsWith('#')) {
-      scrollToSection(href.replace('#', ''));
-      setMobileOpen(false);
+      const id = href.replace('#', '');
+
+      // Already on home page
+      if (location.pathname === '/') {
+        scrollToSection(id);
+      } else {
+        navigate(`/${href}`);
+      }
+
+      return;
     }
+
+    navigate(href);
   };
 
   return (
@@ -70,7 +102,6 @@ export default function Header() {
         }`}
       >
         <div className="max-w-7xl mx-auto px-5 md:px-6 h-full flex items-center justify-between">
-
           {/* LOGO */}
           <Link to="/" className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-champagne-gold/10 border border-champagne-gold/30 flex items-center justify-center">
@@ -79,7 +110,8 @@ export default function Header() {
 
             <div>
               <h2 className="font-serif text-lg md:text-2xl font-bold text-white">
-                VISSION<span className="text-champagne-gold">99</span>
+                VISSION
+                <span className="text-champagne-gold">99</span>
               </h2>
 
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-gray">
@@ -88,36 +120,21 @@ export default function Header() {
             </div>
           </Link>
 
-          {/* DESKTOP MENU */}
+          {/* Desktop Menu */}
           <nav className="hidden lg:flex items-center gap-8">
-            {navLinks.map((item) => {
-              if (item.href.startsWith('#')) {
-                return (
-                  <button
-                    key={item.label}
-                    onClick={() => handleNavClick(item.href)}
-                    className="text-white/75 hover:text-champagne-gold transition-colors font-medium"
-                  >
-                    {item.label}
-                  </button>
-                );
-              }
-
-              return (
-                <Link
-                  key={item.label}
-                  to={item.href}
-                  className="text-white/75 hover:text-champagne-gold transition-colors font-medium"
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
+            {navLinks.map((item) => (
+              <button
+                key={item.label}
+                onClick={() => handleNavClick(item.href)}
+                className="text-white/75 hover:text-champagne-gold transition-colors font-medium"
+              >
+                {item.label}
+              </button>
+            ))}
           </nav>
 
-          {/* RIGHT SIDE */}
+          {/* Right Side */}
           <div className="hidden lg:flex items-center gap-3">
-
             <a
               href="tel:+919593359799"
               className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white hover:text-champagne-gold hover:border-champagne-gold transition"
@@ -126,18 +143,16 @@ export default function Header() {
             </a>
 
             <button
-              onClick={() => scrollToSection('book')}
+              onClick={() => handleNavClick('#book')}
               className="bg-champagne-gold text-deep-black font-semibold px-7 py-3 rounded-xl flex items-center gap-2 hover:bg-soft-gold transition"
             >
               Schedule Consultation
               <ArrowRight className="w-4 h-4" />
             </button>
-
           </div>
 
-          {/* MOBILE */}
+          {/* Mobile */}
           <div className="flex lg:hidden items-center gap-3">
-
             <a
               href="tel:+919593359799"
               className="w-11 h-11 rounded-full border border-white/10 flex items-center justify-center text-white"
@@ -151,13 +166,11 @@ export default function Header() {
             >
               <Menu className="w-5 h-5" />
             </button>
-
           </div>
         </div>
       </motion.header>
 
-      {/* MOBILE MENU */}
-
+      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -168,7 +181,6 @@ export default function Header() {
             className="fixed inset-0 bg-deep-black z-[70]"
           >
             <div className="p-6 flex justify-between items-center">
-
               <h2 className="font-serif text-2xl text-white">
                 VISSION
                 <span className="text-champagne-gold">99</span>
@@ -183,42 +195,29 @@ export default function Header() {
             </div>
 
             <nav className="flex flex-col items-center gap-8 mt-16">
-
               {navLinks.map((item, index) => (
                 <motion.div
                   key={item.label}
                   initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{
-                    delay: index * 0.05,
-                  }}
+                  transition={{ delay: index * 0.05 }}
                 >
-                  {item.href.startsWith('#') ? (
-                    <button
-                      onClick={() => handleNavClick(item.href)}
-                      className="font-serif text-3xl text-white hover:text-champagne-gold transition"
-                    >
-                      {item.label}
-                    </button>
-                  ) : (
-                    <Link
-                      to={item.href}
-                      className="font-serif text-3xl text-white hover:text-champagne-gold transition"
-                    >
-                      {item.label}
-                    </Link>
-                  )}
+                  <button
+                    onClick={() => handleNavClick(item.href)}
+                    className="font-serif text-3xl text-white hover:text-champagne-gold transition"
+                  >
+                    {item.label}
+                  </button>
                 </motion.div>
               ))}
 
               <button
-                onClick={() => scrollToSection('book')}
+                onClick={() => handleNavClick('#book')}
                 className="mt-4 bg-champagne-gold text-deep-black px-8 py-4 rounded-xl font-semibold flex items-center gap-2"
               >
                 Schedule Consultation
                 <ArrowRight className="w-4 h-4" />
               </button>
-
             </nav>
           </motion.div>
         )}
