@@ -22,7 +22,11 @@ export default function Projects() {
         p.location.toLowerCase().includes(search.toLowerCase()) ||
         p.builder.toLowerCase().includes(search.toLowerCase());
       const matchesLocation = !location || p.location === location;
-      const matchesConfig = !config || p.configuration.includes(config);
+      const matchesConfig = !config || (() => {
+  const selectedNum = config.match(/\d+/)?.[0]; // e.g. "3" from "3 BHK"
+  const allNumsInProject = [...p.configuration.matchAll(/(\d+)\s*bhk/gi)].map(m => m[1]);
+  return selectedNum ? allNumsInProject.includes(selectedNum) : false;
+})();
       const matchesVr = !vrOnly || p.vrAvailable;
       return matchesSearch && matchesLocation && matchesConfig && matchesVr;
     });

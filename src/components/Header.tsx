@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Building2,
@@ -19,6 +20,12 @@ const navLinks = [
 ];
 
 export default function Header() {
+  const { user, signOut } = useAuth();
+
+const handleLogout = async () => {
+  await signOut();
+  navigate('/');
+};
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -135,10 +142,12 @@ export default function Header() {
 
           {/* Right Side */}
           <div className="hidden lg:flex items-center gap-3">
-            <a
-              href="tel:+919593359799"
+           
+
+            
+             <a>href="tel:+919593359799"
               className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white hover:text-champagne-gold hover:border-champagne-gold transition"
-            >
+            
               <Phone className="w-5 h-5" />
             </a>
 
@@ -159,6 +168,8 @@ export default function Header() {
             >
               <Phone className="w-5 h-5" />
             </a>
+
+          
 
             <button
               onClick={() => setMobileOpen(true)}
@@ -210,6 +221,23 @@ export default function Header() {
                   </button>
                 </motion.div>
               ))}
+
+              {user ? (
+                <button
+                  onClick={handleLogout}
+                  className="font-serif text-3xl text-white hover:text-champagne-gold transition"
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="font-serif text-3xl text-white hover:text-champagne-gold transition"
+                >
+                  Login
+                </Link>
+              )}
 
               <button
                 onClick={() => handleNavClick('#book')}
