@@ -122,7 +122,7 @@ const handleLogout = async () => {
               </h2>
 
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-gray">
-                Properties
+                AQAAR
               </p>
             </div>
           </Link>
