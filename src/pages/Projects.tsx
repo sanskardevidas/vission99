@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Search, SlidersHorizontal, Rotate3d, ArrowRight, X } from 'lucide-react';
+import { Search,Rotate3d, ArrowRight, X } from 'lucide-react';
 import ProjectCard from '../components/ProjectCard';
 import { getPublishedProjects } from '../utils/storage';
 import { locations } from '../data/locations';
@@ -10,8 +10,6 @@ export default function Projects() {
   const [location, setLocation] = useState('');
   const [config, setConfig] = useState('');
   const [vrOnly, setVrOnly] = useState(false);
-  const [showFilters, setShowFilters] = useState(false);
-
   const allProjects = getPublishedProjects();
 
   const filtered = useMemo(() => {
@@ -23,10 +21,10 @@ export default function Projects() {
         p.builder.toLowerCase().includes(search.toLowerCase());
       const matchesLocation = !location || p.location === location;
       const matchesConfig = !config || (() => {
-  const selectedNum = config.match(/\d+/)?.[0]; // e.g. "3" from "3 BHK"
-  const allNumsInProject = [...p.configuration.matchAll(/(\d+)\s*bhk/gi)].map(m => m[1]);
-  return selectedNum ? allNumsInProject.includes(selectedNum) : false;
-})();
+      const selectedNum = config.match(/\d+/)?.[0]; // e.g. "3" from "3 BHK"
+      const allNumsInProject = [...p.configuration.matchAll(/(\d+)\s*bhk/gi)].map(m => m[1]);
+      return selectedNum ? allNumsInProject.includes(selectedNum) : false;
+    })();
       const matchesVr = !vrOnly || p.vrAvailable;
       return matchesSearch && matchesLocation && matchesConfig && matchesVr;
     });
