@@ -1,68 +1,133 @@
+import { supabase } from '../lib/supabase';
 import type { Project, Lead } from '../types';
 
-const PROJECTS_KEY = 'hv_projects';
-const LEADS_KEY = 'hv_leads';
+export async function getProjects(): Promise<Project[]> {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .order('created_at', { ascending: false });
 
-export function getProjects(): Project[] {
-  const data = localStorage.getItem(PROJECTS_KEY);
-  if (!data) return [];
-  return JSON.parse(data);
+  if (error) {
+    console.error('Error fetching projects:', error);
+    return [];
+  }
+  return data as Project[];
 }
 
-export function getPublishedProjects(): Project[] {
-  return getProjects().filter((p) => p.status === 'published');
+export async function getPublishedProjects(): Promise<Project[]> {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('status', 'published')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching published projects:', error);
+    return [];
+  }
+  return data as Project[];
 }
 
-export function getFeaturedProjects(): Project[] {
-  return getPublishedProjects().filter((p) => p.featured);
+export async function getFeaturedProjects(): Promise<Project[]> {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('status', 'published')
+    .eq('featured', true)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching featured projects:', error);
+    return [];
+  }
+  return data as Project[];
 }
 
-export function getProjectBySlug(slug: string): Project | undefined {
-  return getProjects().find((p) => p.slug === slug);
+export async function getProjectBySlug(slug: string): Promise<Project | undefined> {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('slug', slug)
+    .maybeSingle();
+
+  if (error) {
+    console.error('Error fetching project by slug:', error);
+    return undefined;
+  }
+  return data as Project | undefined;
 }
 
-export function getProjectById(id: string): Project | undefined {
-  return getProjects().find((p) => p.id === id);
+export async function getProjectById(id: string): Promise<Project | undefined> {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+
+  if (error) {
+    console.error('Error fetching project by id:', error);
+    return undefined;
+  }
+  return data as Project | undefined;
 }
 
-export function addProject(project: Project): void {
-  const projects = getProjects();
-  projects.push(project);
-  localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+export async function addProject(project: Project): Promise<void> {
+  const { error } = await supabase.from('projects').insert(project);
+  if (error) {
+    console.error('Error adding project:', error);
+    throw error;
+  }
 }
 
-export function updateProject(id: string, updates: Partial<Project>): void {
-  const projects = getProjects().map((p) =>
-    p.id === id ? { ...p, ...updates } : p
-  );
-  localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+export async function updateProject(id: string, updates: Partial<Project>): Promise<void> {
+  const { error } = await supabase.from('projects').update(updates).eq('id', id);
+  if (error) {
+    console.error('Error updating project:', error);
+    throw error;
+  }
 }
 
-export function deleteProject(id: string): void {
-  const projects = getProjects().filter((p) => p.id !== id);
-  localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+export async function deleteProject(id: string): Promise<void> {
+  const { error } = await supabase.from('projects').delete().eq('id', id);
+  if (error) {
+    console.error('Error deleting project:', error);
+    throw error;
+  }
 }
 
-export function getLeads(): Lead[] {
-  const data = localStorage.getItem(LEADS_KEY);
-  if (!data) return [];
-  return JSON.parse(data);
+export async function getLeads(): Promise<Lead[]> {
+  const { data, error } = await supabase
+    .from('leads')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching leads:', error);
+    return [];
+  }
+  return data as Lead[];
 }
 
-export function addLead(lead: Lead): void {
-  const leads = getLeads();
-  leads.push(lead);
-  localStorage.setItem(LEADS_KEY, JSON.stringify(leads));
+export async function addLead(lead: Lead): Promise<void> {
+  const { error } = await supabase.from('leads').insert(lead);
+  if (error) {
+    console.error('Error adding lead:', error);
+    throw error;
+  }
 }
 
-export function updateLeadStatus(id: string, status: Lead['status']): void {
-  const leads = getLeads().map((l) =>
-    l.id === id ? { ...l, status } : l
-  );
-  localStorage.setItem(LEADS_KEY, JSON.stringify(leads));
+export async function updateLeadStatus(id: string, status: Lead['status']): Promise<void> {
+  const { error } = await supabase.from('leads').update({ status }).eq('id', id);
+  if (error) {
+    console.error('Error updating lead status:', error);
+    throw error;
+  }
 }
 
-export function deleteLead(id: string): void {
-  const leads = getLeads().filter((l) => l.id !== id);
-  localStorage.setItem(LEADS_KEY, JSON.stringify(leads));
+export async function deleteLead(id: string): Promise<void> {
+  const { error } = await supabase.from('leads').delete().eq('id', id);
+  if (error) {
+    console.error('Error deleting lead:', error);
+    throw error;
+  }
 }

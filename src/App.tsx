@@ -12,6 +12,8 @@ import Leads from './pages/admin/Leads';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Unauthorized from './pages/Unauthorized';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function PublicLayout({ children }: { children: React.ReactNode }) {
@@ -33,6 +35,8 @@ export default function App() {
         <Route path="/projects/:slug" element={<PublicLayout><ProjectDetail /></PublicLayout>} />
         <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
         <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
+        <Route path="/forgot-password" element={<PublicLayout><ForgotPassword /></PublicLayout>} />
+        <Route path="/reset-password" element={<PublicLayout><ResetPassword /></PublicLayout>} />
         <Route path="/unauthorized" element={<PublicLayout><Unauthorized /></PublicLayout>} />
 
         <Route
