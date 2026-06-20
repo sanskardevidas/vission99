@@ -9,6 +9,8 @@ import {
 import { getProjectBySlug, getPublishedProjects } from '../utils/storage';
 import ProjectCard from '../components/ProjectCard';
 import LeadForm from '../components/LeadForm';
+import FavoriteButton from '../components/FavoriteButton';
+import CompareButton from '../components/CompareButton';
 
 export default function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -59,9 +61,7 @@ export default function ProjectDetail() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="flex gap-2">
-            <button className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white/80 hover:bg-white/20 transition">
-              <Heart className="w-5 h-5" />
-            </button>
+            <FavoriteButton projectId={project.slug} />
             <button className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white/80 hover:bg-white/20 transition">
               <Share2 className="w-5 h-5" />
             </button>
@@ -139,6 +139,7 @@ export default function ProjectDetail() {
                     <Rotate3d className="w-4 h-4" /> Start VR Tour
                   </motion.button>
                 )}
+                <CompareButton projectId={project.slug} />
                 <motion.button
                   whileHover={{ y: -2 }}
                   className="bg-transparent border border-charcoal/20 text-charcoal font-sans font-semibold px-6 py-3 rounded-xl flex items-center gap-2 hover:border-champagne-gold hover:text-champagne-gold transition"
