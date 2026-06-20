@@ -144,10 +144,10 @@ const handleLogout = async () => {
           <div className="hidden lg:flex items-center gap-3">
            
 
-            
-             <a>href="tel:+919593359799"
+            <a
+              href="tel:+919593359799"
               className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white hover:text-champagne-gold hover:border-champagne-gold transition"
-            
+            >
               <Phone className="w-5 h-5" />
             </a>
 
