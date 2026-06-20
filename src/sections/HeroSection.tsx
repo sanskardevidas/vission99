@@ -74,7 +74,7 @@ export default function HeroSection() {
             <motion.h1
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ duration: 2.5, delay: 0.2 }}     
               className="font-serif text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-[1.05] mb-6"
             >
               Invest Beyond{' '}
