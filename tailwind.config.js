@@ -18,8 +18,8 @@ export default {
         'muted-gray': '#9B9B9B',
       },
       fontFamily: {
-        serif: ['Playfair Display', 'Georgia', 'serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+      serif: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+      sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       animation: {
         'pulse-gold': 'pulseGold 2s ease-in-out infinite',
