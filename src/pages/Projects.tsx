@@ -1,16 +1,25 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search,Rotate3d, ArrowRight, X } from 'lucide-react';
+import { Search, Rotate3d, ArrowRight, X } from 'lucide-react';
 import ProjectCard from '../components/ProjectCard';
 import { getPublishedProjects } from '../utils/storage';
 import { locations } from '../data/locations';
+import type { Project } from '../types';
 
 export default function Projects() {
   const [search, setSearch] = useState('');
   const [location, setLocation] = useState('');
   const [config, setConfig] = useState('');
   const [vrOnly, setVrOnly] = useState(false);
-  const allProjects = getPublishedProjects();
+  const [allProjects, setAllProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getPublishedProjects().then((data) => {
+      setAllProjects(data);
+      setLoading(false);
+    });
+  }, []);
 
   const filtered = useMemo(() => {
     return allProjects.filter((p) => {
@@ -112,7 +121,11 @@ export default function Projects() {
           </div>
         </div>
 
-        {filtered.length === 0 ? (
+        {loading ? (
+        <div className="text-center py-20">
+        <p className="font-serif text-2xl font-bold text-charcoal mb-2">Loading projects...</p>
+        </div>
+        ) : filtered.length === 0 ?  (
           <div className="text-center py-20">
             <p className="font-serif text-2xl font-bold text-charcoal mb-2">No Projects Found</p>
             <p className="font-sans text-sm text-muted-gray">Try adjusting your filters.</p>

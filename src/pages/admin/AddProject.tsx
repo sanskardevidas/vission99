@@ -64,9 +64,8 @@ export default function AddProject() {
     setForm((f) => ({ ...f, images: f.images.filter((_, idx) => idx !== i) }));
   };
 
-  const handleSave = (status: 'draft' | 'published') => {
-    const project: Project = {
-      id: Date.now().toString(),
+      const handleSave = async (status: 'draft' | 'published') => {
+      const project: Project = {
       name: form.name,
       slug: form.slug || generateSlug(form.name),
       builder: form.builder,
@@ -90,13 +89,13 @@ export default function AddProject() {
       status,
       badge: form.badge,
     };
-    addProject(project);
+    await addProject(project);
     navigate('/admin');
   };
 
-  const inputClass = 'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-sans text-sm placeholder-muted-gray focus:border-champagne-gold focus:outline-none transition-colors';
+    const inputClass = 'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-sans text-sm placeholder-muted-gray focus:border-champagne-gold focus:outline-none transition-colors';
 
-  return (
+    return (
     <div>
       <div className="flex items-center gap-3 mb-8">
         <button onClick={() => navigate('/admin')} className="text-muted-gray hover:text-champagne-gold transition">
@@ -250,5 +249,4 @@ export default function AddProject() {
         </div>
       </div>
     </div>
-  );
-}
+    )}
