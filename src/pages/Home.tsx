@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import desktopVideo from "../assets/desktop.mp4";
 import mobileVideo from "../assets/mobile.mp4";
 import HeroSection from '../sections/HeroSection';
@@ -22,11 +23,14 @@ useEffect(() => {
 
   return () => clearTimeout(timer);
 }, []);
-  return (
-    <>
-    {showIntro ? (
-      <div
-        style={{
+ return (
+  <>
+    <AnimatePresence>
+      {showIntro && (
+        <motion.div
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          style={{
           position: "fixed",
           top: 0,
           left: 0,
@@ -50,10 +54,16 @@ useEffect(() => {
             src={isMobile ? mobileVideo : desktopVideo}
             type="video/mp4"
           />
-        </video>
-      </div>
-    ) : (
-      <main>
+       </video>
+      </motion.div>
+      )}
+    </AnimatePresence>
+    {!showIntro && (
+     <motion.main
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, ease: "easeInOut" }}
+      >
         <HeroSection />
         <HowItWorksSection />
         <CitySelectionSection />
@@ -62,7 +72,7 @@ useEffect(() => {
         <FounderSection />
         <SuccessStoriesSection />
         <BookExperienceSection />
-      </main>
+      </motion.main>
     )}
   </>
   )};
