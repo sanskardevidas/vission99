@@ -50,7 +50,7 @@ export default function HeroSection() {
           backgroundPosition: 'center',
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-deep-black via-deep-black/90 to-deep-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-r from-deep-black/70 via-deep-black/55 to-deep-black/30" />
       </motion.div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-32 w-full">
