@@ -14,7 +14,8 @@ const statusOptions: { value: Lead['status']; label: string; color: string }[] =
 
 export default function Leads() {
   const navigate = useNavigate();
-  const [leads, setLeads] = useState(getLeads());
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
@@ -30,19 +31,53 @@ export default function Leads() {
     });
   }, [leads, search, statusFilter]);
 
-  const handleStatusUpdate = (id: string, status: Lead['status']) => {
-    updateLeadStatus(id, status);
-    setLeads(getLeads());
+  const handleStatusUpdate = async (
+    id: string,
+    status: Lead['status']
+  ) => {
+    await updateLeadStatus(id, status);
+
+    const data = await getLeads();
+    setLeads(Array.isArray(data) ? data : []);
   };
 
-  const handleDelete = (id: string) => {
-    deleteLead(id);
-    setLeads(getLeads());
+  const handleDelete = async (id: string) => {
+    await deleteLead(id);
+    const data = await getLeads();
+    setLeads(Array.isArray(data) ? data : []);
   };
 
   const getStatusColor = (status: Lead['status']) => {
     return statusOptions.find((s) => s.value === status)?.color || 'bg-white/10 text-white';
   };
+  if (loading) {
+    return (
+      <div className="text-center py-16">
+        <p className="font-sans text-muted-gray">
+          Loading leads...
+        </p>
+      </div>
+    );
+  }
+  useEffect(() => {
+    const loadLeads = async () => {
+      try {
+        const data = await getLeads();
+        if (Array.isArray(data)) {
+          setLeads(data);
+        } else {
+          setLeads([]);
+        }
+      } catch (error) {
+        console.error('Failed to load leads:', error);
+        setLeads([]);
+      } finally {
+        setLoading(false);
+      }
+   };
+
+   loadLeads();
+  }, []);
 
   return (
     <div>

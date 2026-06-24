@@ -6,11 +6,44 @@ import { getProjects, getLeads } from '../../utils/storage';
 import type { Project, Lead } from '../../types';
 
 export default function Dashboard() {
-  const projects = getProjects();
-  const leads = getLeads();
-  const published = projects.filter((p) => p.status === 'published');
-  const drafts = projects.filter((p) => p.status === 'draft');
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [projectsData, leadsData] = await Promise.all([
+          getProjects(),
+          getLeads(),
+        ]);
+        setProjects(
+          Array.isArray(projectsData)
+          ? projectsData
+          : []
+        );
 
+        setLeads(
+          Array.isArray(leadsData)
+          ? leadsData
+          : []
+        );
+      } catch (error) {
+        console.error(error);
+
+        setProjects([]);
+        setLeads([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
+  const published = projects.filter(
+    (p) => p.status === 'published'
+  );
+  const drafts = projects.filter(
+    (p) => p.status === 'draft'
+  );
   const stats = [
     { icon: <Building2 className="w-5 h-5" />, value: projects.length, label: 'Total Projects', color: 'text-champagne-gold' },
     { icon: <Eye className="w-5 h-5" />, value: published.length, label: 'Published', color: 'text-green-400' },

@@ -113,7 +113,7 @@ const activeProject = useMemo(() => {
                   }`}
                 >
                   <img
-                    src={project.images[0]}
+                    src={project.images?.[0] || '/placeholder.jpg'}
                     alt={project.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
@@ -194,7 +194,7 @@ const activeProject = useMemo(() => {
               <div className="space-y-6">
                 <div className="relative rounded-2xl overflow-hidden h-64 md:h-80">
                   <img
-                    src={activeProject?.images?.[0]}
+                    src={activeProject?.images?.[0] || '/placeholder.jpg'}
                     alt={activeProject?.name}
                     className="w-full h-full object-cover"
                   />
