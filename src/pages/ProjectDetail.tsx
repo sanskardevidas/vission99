@@ -148,9 +148,15 @@ export default function ProjectDetail() {
                 </motion.button>
                 <motion.button
                   whileHover={{ y: -2 }}
+                  onClick={() => {
+                    alert(
+                      'Site Visit Booking feature will be connected to Supabase in Phase 2.'
+                    );
+                  }}
                   className="bg-transparent border border-charcoal/20 text-charcoal font-sans font-semibold px-6 py-3 rounded-xl flex items-center gap-2 hover:border-champagne-gold hover:text-champagne-gold transition"
                 >
-                  <Phone className="w-4 h-4" /> Book Site Visit
+                  <Phone className="w-4 h-4" />
+                  Book Site Visit
                 </motion.button>
               </div>
             </motion.div>
