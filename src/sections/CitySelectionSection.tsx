@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Play, ArrowRight, Wifi, Building2, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '../components/SectionHeader';
 import { getPublishedProjects } from '../utils/storage';
+import type { Project } from '../types';
 
 const whyItems = [
   {
@@ -24,14 +25,43 @@ const whyItems = [
 ];
 
 export default function CitySelectionSection() {
-  const projects = getPublishedProjects();
-  const [activeProjectId, setActiveProjectId] = useState<string | null>(
-    projects[0]?.id || null
-  );
+  const [projects, setProjects] = useState<Project[]>([]);
+const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
+const [loading, setLoading] = useState(true);
 
-  const activeProject = useMemo(() => {
-    return projects.find((p) => p.id === activeProjectId) || projects[0];
-  }, [projects, activeProjectId]);
+useEffect(() => {
+  const loadProjects = async () => {
+    try {
+      const data = await getPublishedProjects();
+
+      if (Array.isArray(data)) {
+        setProjects(data);
+
+        if (data.length > 0) {
+          setActiveProjectId(data[0].id);
+        }
+      } else {
+        setProjects([]);
+      }
+    } catch (error) {
+      console.error('Failed to load projects:', error);
+      setProjects([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  loadProjects();
+}, []);
+
+const activeProject = useMemo(() => {
+  if (!projects.length) return null;
+
+  return (
+    projects.find((p) => p.id === activeProjectId) ||
+    projects[0]
+  );
+}, [projects, activeProjectId]);
 
   return (
     <section className="bg-warm-ivory section-padding">
@@ -44,24 +74,29 @@ export default function CitySelectionSection() {
           light
         />
 
-        {projects.length === 0 ? (
+        {loading ? (
           <div className="bg-white rounded-2xl border border-stone-gray/30 p-10 text-center">
-            <Building2 className="w-12 h-12 text-champagne-gold mx-auto mb-4" />
-            <h3 className="font-serif text-2xl font-bold text-charcoal mb-2">
-              No Projects Added Yet
-            </h3>
-            <p className="font-sans text-sm text-muted-gray mb-6">
-              Add and publish real projects from the admin panel. After that, they will show here automatically.
-            </p>
-
-            <Link to="/admin/projects/add">
-              <button className="bg-champagne-gold text-deep-black font-sans font-semibold px-7 py-3 rounded-xl inline-flex items-center gap-2 hover:bg-soft-gold transition">
-                Add Project
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </Link>
-          </div>
-        ) : (
+            <p className="font-sans text-muted-gray">
+              Loading projects...
+              </p>
+              </div>
+              ) : projects.length === 0 ? (
+              <div className="bg-white rounded-2xl border border-stone-gray/30 p-10 text-center">
+                <Building2 className="w-12 h-12 text-champagne-gold mx-auto mb-4" />
+                <h3 className="font-serif text-2xl font-bold text-charcoal mb-2">
+                  No Projects Added Yet
+                </h3>
+                <p className="font-sans text-sm text-muted-gray mb-6">
+                  Add and publish real projects from the admin panel. After that, they will show here automatically.
+                </p>
+                <Link to="/admin/projects/add">
+                <button className="bg-champagne-gold text-deep-black font-sans font-semibold px-7 py-3 rounded-xl inline-flex items-center gap-2 hover:bg-soft-gold transition">
+                  Add Project
+                  <ArrowRight className="w-4 h-4" />
+                  </button>
+                </Link>
+              </div>
+              ) : (
           <>
             <div className="flex gap-5 overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
               {projects.map((project, i) => (
