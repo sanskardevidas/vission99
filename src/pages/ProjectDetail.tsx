@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -11,12 +11,73 @@ import ProjectCard from '../components/ProjectCard';
 import LeadForm from '../components/LeadForm';
 import FavoriteButton from '../components/FavoriteButton';
 import CompareButton from '../components/CompareButton';
+import type { Project } from '../types';
 
 export default function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const project = slug ? getProjectBySlug(slug) : undefined;
+
+  const [project, setProject] = useState<Project | null>(null);
+  const [similarProjects, setSimilarProjects] = useState<Project[]>([]);
   const [activeImage, setActiveImage] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProject = async () => {
+      if (!slug) {
+        setProject(null);
+        setSimilarProjects([]);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const projectData = await getProjectBySlug(slug);
+
+        if (!projectData) {
+          setProject(null);
+          setSimilarProjects([]);
+          return;
+        }
+
+        setProject(projectData);
+
+        const publishedProjects = await getPublishedProjects();
+
+        const similar = Array.isArray(publishedProjects)
+          ? publishedProjects
+              .filter(
+                (p) =>
+                  p.location === projectData.location &&
+                  p.id !== projectData.id
+              )
+              .slice(0, 3)
+          : [];
+
+        setSimilarProjects(similar);
+      } catch (error) {
+        console.error('Failed to load project details:', error);
+        setProject(null);
+        setSimilarProjects([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProject();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-premium-ivory flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="font-serif text-4xl font-bold text-charcoal mb-4">
+            Loading Project...
+          </h1>
+        </div>
+      </div>
+    );
+  }
 
   if (!project) {
     return (
@@ -31,10 +92,6 @@ export default function ProjectDetail() {
     );
   }
 
-  const similarProjects = getPublishedProjects()
-    .filter((p) => p.location === project.location && p.id !== project.id)
-    .slice(0, 3);
-
   const badgeColors: Record<string, string> = {
     Premium: 'bg-champagne-gold/20 text-champagne-gold border-champagne-gold/30',
     'New Launch': 'bg-green-500/20 text-green-400 border-green-500/30',
@@ -47,7 +104,7 @@ export default function ProjectDetail() {
     <div className="min-h-screen bg-premium-ivory">
       <div className="relative h-[50vh] md:h-[60vh] bg-deep-black overflow-hidden">
         <img
-          src={project.images[activeImage] || project.images[0]}
+          src={project.images?.[activeImage] || project.images?.[0]}
           alt={project.name}
           className="w-full h-full object-cover"
         />
@@ -80,7 +137,7 @@ export default function ProjectDetail() {
             )}
           </div>
           <div className="flex gap-3 overflow-x-auto">
-            {project.images.map((img, i) => (
+            {(project.images || []).map((img, i) => (
               <button
                 key={i}
                 onClick={() => setActiveImage(i)}
@@ -177,7 +234,7 @@ export default function ProjectDetail() {
             >
               <h2 className="font-serif text-2xl font-bold text-charcoal mb-4">Amenities</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {project.amenities.map((a) => (
+                {(project.amenities || []).map((a) => (
                   <div key={a} className="flex items-center gap-2 bg-white rounded-xl border border-stone-gray/30 p-3">
                     <CheckCircle className="w-4 h-4 text-champagne-gold shrink-0" />
                     <span className="font-sans text-sm text-charcoal">{a}</span>
@@ -193,7 +250,7 @@ export default function ProjectDetail() {
             >
               <h2 className="font-serif text-2xl font-bold text-charcoal mb-4">Floor Plans</h2>
               <div className="grid md:grid-cols-2 gap-4">
-                {project.floorPlans.map((fp, i) => (
+                {(project.floorPlans || []).map((fp, i) => (
                   <div key={i} className="bg-white rounded-xl border border-stone-gray/30 p-4 overflow-hidden">
                     <img src={fp} alt={`Floor plan ${i + 1}`} className="w-full h-48 object-cover rounded-lg" />
                   </div>
