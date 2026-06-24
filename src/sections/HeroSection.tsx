@@ -10,6 +10,7 @@ import {
   BadgeCheck,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import heroImage from '../assets/hero.png';
 
 const stats = [
   {
@@ -44,8 +45,7 @@ export default function HeroSection() {
         animate={{ scale: 1 }}
         transition={{ duration: 20, ease: 'linear' }}
         style={{
-          backgroundImage:
-            'url(https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=1920)',
+          backgroundImage: `url(${heroImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
