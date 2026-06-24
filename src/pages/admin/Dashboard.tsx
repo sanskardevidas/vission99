@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Building2, Eye, FileEdit, Users, MapPin, RotateC3d, PlusCircle, Upload } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getProjects, getLeads } from '../../utils/storage';
+import type { Project, Lead } from '../../types';
 
 export default function Dashboard() {
   const projects = getProjects();
