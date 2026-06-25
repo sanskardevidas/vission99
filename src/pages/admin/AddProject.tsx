@@ -17,7 +17,7 @@ const allAmenities = [
 ];
 
 const vrTypes = ['matterport', 'kuula', 'youtube360', 'video360', 'video'];
-
+const [isSaving, setIsSaving] = useState(false);
 export default function AddProject() {
   const navigate = useNavigate();
 
@@ -71,30 +71,39 @@ export default function AddProject() {
   };
 
   const handleSave = async (status: 'draft' | 'published') => {
-    const autoName = form.area
-      ? `${form.area} ${form.location}`
-      : form.location;
+    if (isSaving) return;
+    if (!form.location.trim() || !form.area.trim() || !form.price.trim()) {
+      alert('Please fill Project Location, Area and Starting Price.');
+      return;
+    }
+    setIsSaving(true);
+    try {
+      const autoName = form.area
+        ? `${form.area} ${form.location}`
+        : form.location;
 
-    const autoSlug = generateSlug(
-      form.area
-        ? `${form.area}-${form.location}`
-        : form.location
-    );
+      const autoSlug = generateSlug(
+        form.area
+          ? `${form.area}-${form.location}`
+          : form.location
+      );
 
     const project: Project = {
       name: autoName,
       slug: autoSlug,
-      builder: '',
+      builder: 'Not specified',
       location: form.area
         ? `${form.area}, ${form.location}`
         : form.location,
-      address: '',
+      address: form.area
+        ? `${form.area}, ${form.location}`
+        : form.location,
       price: form.price,
       priceRange: form.priceRange,
       configuration: form.configuration,
       carpetArea: form.carpetArea,
       possession: form.possession,
-      reraNumber: '',
+      reraNumber: 'Not specified',
       description: form.description,
       amenities: form.amenities,
       images: form.images.filter((i) => i.trim()),
@@ -109,8 +118,16 @@ export default function AddProject() {
     };
 
     await addProject(project);
+
+    alert(status === 'published' ? 'Project published successfully!' : 'Draft saved successfully!');
     navigate('/admin');
-  };
+  } catch (error) {
+    console.error('Failed to save project:', error);
+    alert('Project save failed. Check console for exact Supabase error.');
+  } finally {
+    setIsSaving(false);
+  }
+};
 
   const inputClass =
     'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-sans text-sm placeholder-muted-gray focus:border-champagne-gold focus:outline-none transition-colors';
