@@ -17,9 +17,10 @@ const allAmenities = [
 ];
 
 const vrTypes = ['matterport', 'kuula', 'youtube360', 'video360', 'video'];
-const [isSaving, setIsSaving] = useState(false);
+
 export default function AddProject() {
   const navigate = useNavigate();
+  const [isSaving, setIsSaving] = useState(false);
 
   const [form, setForm] = useState({
     location: '',
@@ -36,7 +37,6 @@ export default function AddProject() {
     vrTourUrl: '',
     featured: false,
     vrAvailable: true,
-    status: 'draft' as 'draft' | 'published',
     badge: 'Premium',
   });
 
@@ -72,62 +72,59 @@ export default function AddProject() {
 
   const handleSave = async (status: 'draft' | 'published') => {
     if (isSaving) return;
+
     if (!form.location.trim() || !form.area.trim() || !form.price.trim()) {
       alert('Please fill Project Location, Area and Starting Price.');
       return;
     }
-    setIsSaving(true);
-    try {
-      const autoName = form.area
-        ? `${form.area} ${form.location}`
-        : form.location;
 
-      const autoSlug = generateSlug(
-        form.area
-          ? `${form.area}-${form.location}`
-          : form.location
+    setIsSaving(true);
+
+    try {
+      const autoName = `${form.area.trim()} ${form.location.trim()}`;
+      const autoSlug = generateSlug(`${form.area.trim()}-${form.location.trim()}`);
+
+      const project: Project = {
+        name: autoName,
+        slug: autoSlug,
+        builder: 'Not specified',
+        location: `${form.area.trim()}, ${form.location.trim()}`,
+        address: `${form.area.trim()}, ${form.location.trim()}`,
+        price: form.price,
+        priceRange: form.priceRange,
+        configuration: form.configuration,
+        carpetArea: form.carpetArea,
+        possession: form.possession,
+        reraNumber: 'Not specified',
+        description: form.description,
+        amenities: form.amenities,
+        images: form.images.filter((i) => i.trim()),
+        floorPlans: [],
+        brochure: '',
+        vrTourType: form.vrTourType,
+        vrTourUrl: form.vrTourUrl,
+        featured: form.featured,
+        vrAvailable: form.vrAvailable,
+        status,
+        badge: form.badge,
+      };
+
+      await addProject(project);
+
+      alert(
+        status === 'published'
+          ? 'Project published successfully!'
+          : 'Draft saved successfully!'
       );
 
-    const project: Project = {
-      name: autoName,
-      slug: autoSlug,
-      builder: 'Not specified',
-      location: form.area
-        ? `${form.area}, ${form.location}`
-        : form.location,
-      address: form.area
-        ? `${form.area}, ${form.location}`
-        : form.location,
-      price: form.price,
-      priceRange: form.priceRange,
-      configuration: form.configuration,
-      carpetArea: form.carpetArea,
-      possession: form.possession,
-      reraNumber: 'Not specified',
-      description: form.description,
-      amenities: form.amenities,
-      images: form.images.filter((i) => i.trim()),
-      floorPlans: [],
-      brochure: '',
-      vrTourType: form.vrTourType,
-      vrTourUrl: form.vrTourUrl,
-      featured: form.featured,
-      vrAvailable: form.vrAvailable,
-      status,
-      badge: form.badge,
-    };
-
-    await addProject(project);
-
-    alert(status === 'published' ? 'Project published successfully!' : 'Draft saved successfully!');
-    navigate('/admin');
-  } catch (error) {
-    console.error('Failed to save project:', error);
-    alert('Project save failed. Check console for exact Supabase error.');
-  } finally {
-    setIsSaving(false);
-  }
-};
+      navigate('/admin');
+    } catch (error) {
+      console.error('Failed to save project:', error);
+      alert('Project save failed. Check console for exact error.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const inputClass =
     'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-sans text-sm placeholder-muted-gray focus:border-champagne-gold focus:outline-none transition-colors';
@@ -136,6 +133,7 @@ export default function AddProject() {
     <div>
       <div className="flex items-center gap-3 mb-8">
         <button
+          type="button"
           onClick={() => navigate('/admin')}
           className="text-muted-gray hover:text-champagne-gold transition"
         >
@@ -169,9 +167,7 @@ export default function AddProject() {
           <input
             className={inputClass}
             value={form.area}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, area: e.target.value }))
-            }
+            onChange={(e) => setForm((f) => ({ ...f, area: e.target.value }))}
             placeholder="e.g. Lohegaon, Hinjewadi, PCMC"
           />
         </div>
@@ -183,9 +179,7 @@ export default function AddProject() {
           <input
             className={inputClass}
             value={form.price}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, price: e.target.value }))
-            }
+            onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
             placeholder="₹89 L+"
           />
         </div>
@@ -253,9 +247,7 @@ export default function AddProject() {
           <select
             className={inputClass}
             value={form.badge}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, badge: e.target.value }))
-            }
+            onChange={(e) => setForm((f) => ({ ...f, badge: e.target.value }))}
           >
             {['Premium', 'New Launch', 'Luxury', 'Best Seller', 'Ultra Luxury'].map(
               (b) => (
@@ -408,21 +400,23 @@ export default function AddProject() {
           <motion.button
             type="button"
             whileHover={{ y: -1 }}
+            disabled={isSaving}
             onClick={() => handleSave('draft')}
-            className="bg-white/5 border border-white/10 text-white font-sans font-semibold px-6 py-3 rounded-xl flex items-center gap-2 hover:border-champagne-gold/30 transition"
+            className="bg-white/5 border border-white/10 text-white font-sans font-semibold px-6 py-3 rounded-xl flex items-center gap-2 hover:border-champagne-gold/30 transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <Save className="w-4 h-4" />
-            Save Draft
+            {isSaving ? 'Saving...' : 'Save Draft'}
           </motion.button>
 
           <motion.button
             type="button"
             whileHover={{ y: -1 }}
+            disabled={isSaving}
             onClick={() => handleSave('published')}
-            className="bg-champagne-gold text-deep-black font-sans font-semibold px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-soft-gold transition"
+            className="bg-champagne-gold text-deep-black font-sans font-semibold px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-soft-gold transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <Send className="w-4 h-4" />
-            Publish Project
+            {isSaving ? 'Publishing...' : 'Publish Project'}
           </motion.button>
         </div>
       </div>
