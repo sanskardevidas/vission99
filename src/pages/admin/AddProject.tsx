@@ -119,8 +119,9 @@ export default function AddProject() {
 
       navigate('/admin');
     } catch (error) {
-      console.error('Failed to save project:', error);
-      alert('Project save failed. Check console for exact error.');
+      console.error("FULL ERROR:", error);
+      alert(JSON.stringify(error, null, 2));
+      setIsSaving(false);
     } finally {
       setIsSaving(false);
     }
