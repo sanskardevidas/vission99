@@ -406,6 +406,7 @@ export default function AddProject() {
 
         <div className="md:col-span-2 flex gap-4 pt-4">
           <motion.button
+            type="button"
             whileHover={{ y: -1 }}
             onClick={() => handleSave('draft')}
             className="bg-white/5 border border-white/10 text-white font-sans font-semibold px-6 py-3 rounded-xl flex items-center gap-2 hover:border-champagne-gold/30 transition"
@@ -415,6 +416,7 @@ export default function AddProject() {
           </motion.button>
 
           <motion.button
+            type="button"
             whileHover={{ y: -1 }}
             onClick={() => handleSave('published')}
             className="bg-champagne-gold text-deep-black font-sans font-semibold px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-soft-gold transition"
