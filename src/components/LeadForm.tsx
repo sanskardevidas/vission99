@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Phone, Mail, Calendar, Clock, MapPin, MessageSquare, ArrowRight, Shield } from 'lucide-react';
+import { User, Phone, Mail, Calendar, MapPin, MessageSquare, ArrowRight, Shield } from 'lucide-react';
 import type { Lead } from '../types';
 import { addLead } from '../utils/storage';
 
@@ -12,15 +12,14 @@ interface LeadFormProps {
 
 export default function LeadForm({ source = 'website', variant = 'book', onSuccess }: LeadFormProps) {
   const [form, setForm] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    date: '',
-    time: '',
-    location: '',
-    message: '',
-    budget: '',
-  });
+  name: '',
+  phone: '',
+  email: '',
+  date: '',
+  address: '',
+  message: '',
+  budget: '',
+});
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -30,7 +29,7 @@ export default function LeadForm({ source = 'website', variant = 'book', onSucce
       name: form.name,
       phone: form.phone,
       email: form.email,
-      preferredLocation: form.location,
+      preferredLocation: form.address,
       interestedProject: '',
       budget: form.budget,
       message: form.message,
@@ -49,14 +48,13 @@ export default function LeadForm({ source = 'website', variant = 'book', onSucce
         { key: 'phone', icon: <Phone className="w-4 h-4" />, placeholder: 'Mobile Number', type: 'tel' },
         { key: 'email', icon: <Mail className="w-4 h-4" />, placeholder: 'Email Address', type: 'email' },
         { key: 'date', icon: <Calendar className="w-4 h-4" />, placeholder: 'Preferred Date', type: 'date' },
-        { key: 'time', icon: <Clock className="w-4 h-4" />, placeholder: 'Preferred Time', type: 'time' },
+        
         {
-          key: 'location',
+          key: 'address',
           icon: <MapPin className="w-4 h-4" />,
-          placeholder: 'Select Location',
-          type: 'select',
-          options: ['', 'Baner', 'Wakad', 'Hinjewadi', 'Kharadi', 'Viman Nagar'],
-        },
+          placeholder: 'Enter Complete Property Address',
+          type: 'textarea',
+    },
         { key: 'message', icon: <MessageSquare className="w-4 h-4" />, placeholder: 'Any specific requirement? (Optional)', type: 'text' },
       ]
     : [
@@ -91,32 +89,33 @@ export default function LeadForm({ source = 'website', variant = 'book', onSucce
     <form onSubmit={handleSubmit} className="space-y-4">
       {fields.map((field) => (
         <div key={field.key} className="relative">
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-gray">
-            {field.icon}
-          </div>
-          {field.type === 'select' ? (
-            <select
-              value={form[field.key as keyof typeof form]}
-              onChange={(e) => setForm((f) => ({ ...f, [field.key]: e.target.value }))}
-              className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-white font-sans text-sm placeholder-muted-gray focus:border-champagne-gold focus:outline-none transition-colors appearance-none"
-              required={field.key !== 'message'}
-            >
-              {(field.options || []).map((opt) => (
-                <option key={opt} value={opt} className="bg-charcoal">
-                  {opt || field.placeholder}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <input
-              type={field.type}
-              value={form[field.key as keyof typeof form]}
-              onChange={(e) => setForm((f) => ({ ...f, [field.key]: e.target.value }))}
-              placeholder={field.placeholder}
-              required={field.key !== 'message'}
-              className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-white font-sans text-sm placeholder-muted-gray focus:border-champagne-gold focus:outline-none transition-colors"
-            />
-          )}
+         <div className="absolute left-4 top-4 text-muted-gray">
+  {field.icon}
+</div>
+
+{field.type === 'textarea' ? (
+  <textarea
+    rows={4}
+    value={form[field.key as keyof typeof form]}
+    onChange={(e) =>
+      setForm((f) => ({ ...f, [field.key]: e.target.value }))
+    }
+    placeholder={field.placeholder}
+    required={field.key !== 'message'}
+    className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-white font-sans text-sm placeholder-muted-gray focus:border-champagne-gold focus:outline-none transition-colors resize-none"
+  />
+) : (
+  <input
+    type={field.type}
+    value={form[field.key as keyof typeof form]}
+    onChange={(e) =>
+      setForm((f) => ({ ...f, [field.key]: e.target.value }))
+    }
+    placeholder={field.placeholder}
+    required={field.key !== 'message'}
+    className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-white font-sans text-sm placeholder-muted-gray focus:border-champagne-gold focus:outline-none transition-colors"
+  />
+)}
         </div>
       ))}
       <motion.button
