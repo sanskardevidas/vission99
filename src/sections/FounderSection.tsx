@@ -21,7 +21,7 @@ const stats = [
 
 const presence = [
   {
-    location: 'Pune, India',
+    location: 'India',
     text: "Premium residential and investment opportunities in one of India's fastest-growing markets.",
   },
   {
@@ -86,12 +86,12 @@ export default function FounderSection() {
 
               <p>
                 At D. Devidas Global Real Estate Advisory, we help buyers and investors discover
-                verified opportunities across Pune, Dubai and the United Kingdom through
+                verified opportunities across India, Dubai and the United Kingdom through
                 transparency, expertise and long-term relationships.
               </p>
 
               <p className="hidden md:block">
-                With international operations spanning London, Dubai and Pune, we combine local
+                With international operations spanning London, Dubai and India, we combine local
                 market understanding with global reach to deliver a seamless real estate experience.
                 Whether you are searching for your dream home, expanding your investment portfolio
                 or exploring international opportunities, our commitment remains the same providing

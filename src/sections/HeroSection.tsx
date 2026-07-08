@@ -83,7 +83,7 @@ export default function HeroSection() {
                 Borders
               </span>
               <br />
-              In Pune, Dubai & UK
+              In India, Dubai & United Kingdom
             </motion.h1>
 
             <motion.p
@@ -130,7 +130,7 @@ export default function HeroSection() {
             >
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-champagne-gold" />
-                Pune
+                India
               </div>
 
               <div className="flex items-center gap-2">
@@ -140,7 +140,7 @@ export default function HeroSection() {
 
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-champagne-gold" />
-                Southampton UK
+                United Kingdom
               </div>
             </motion.div>
 
@@ -170,7 +170,7 @@ export default function HeroSection() {
               </h3>
 
               <p className="text-stone-gray font-sans text-sm leading-relaxed mb-6">
-                Verified real estate opportunities across Pune, Dubai and UK
+                Verified real estate opportunities across India, Dubai and UK
                 with complete support for investors and home buyers.
               </p>
 

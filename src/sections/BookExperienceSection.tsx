@@ -25,7 +25,7 @@ const features = [
   },
   {
     icon: <Globe2 className="w-5 h-5" />,
-    title: 'Pune, Dubai & UK Advisory',
+    title: 'India, Dubai & UK Advisory',
     desc: 'Explore verified opportunities across local and international real estate markets.',
   },
 ];
@@ -62,7 +62,7 @@ export default function BookExperienceSection() {
 
             <p className="text-stone-gray font-sans text-sm md:text-base leading-relaxed max-w-xl mb-7">
               Share your requirement and our team will help you find verified property options
-              across Pune, Dubai and the UK based on your budget, purpose and investment goals.
+              across India, Dubai and the UK based on your budget, purpose and investment goals.
             </p>
 
             <div className="space-y-4 mb-8">
@@ -143,7 +143,7 @@ export default function BookExperienceSection() {
               </div>
 
               <p className="text-white font-sans text-sm leading-relaxed">
-                Pune, India • Dubai, UAE • Southampton, United Kingdom
+                 India • Dubai, UAE • Southampton, United Kingdom
               </p>
 
               <p className="text-stone-gray font-sans text-xs mt-2 leading-relaxed">

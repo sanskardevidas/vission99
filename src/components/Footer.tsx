@@ -37,7 +37,7 @@ export default function Footer() {
             </Link>
 
             <p className="text-muted-gray font-sans text-sm leading-relaxed max-w-md">
-              Helping buyers and investors discover verified real estate opportunities across Pune, Dubai and the UK.
+              Helping buyers and investors discover verified real estate opportunities across India, Dubai and the UK.
             </p>
 
             <p className="text-champagne-gold font-sans text-[10px] md:text-xs tracking-[0.15em] uppercase mt-4">
@@ -89,7 +89,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-stone-gray font-sans text-sm">
                 <MapPin className="w-4 h-4 text-champagne-gold shrink-0 mt-0.5" />
-                Pune • Dubai • Southampton UK
+                India • Dubai • Southampton UK
               </li>
 
               <li className="flex items-center gap-3 text-stone-gray font-sans text-sm">
