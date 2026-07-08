@@ -24,13 +24,21 @@ export default function EditProject() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      const project = getProjectById(id);
-      if (project) {
-        setForm(project);
+    const loadProject = async () => {
+      if (!id) return;
+
+      try {
+        const project = await getProjectById(id);
+        if (project) {
+          setForm(project);
+        }
+      } catch (error) {
+        console.error('Failed to load project:', error);
+      } finally {
         setLoaded(true);
       }
-    }
+    };
+    loadProject();
   }, [id]);
 
   if (!loaded) {
