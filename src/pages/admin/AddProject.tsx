@@ -17,18 +17,63 @@ const allAmenities = [
 ];
 
 const vrTypes = ['matterport', 'kuula', 'youtube360', 'video360', 'video'];
+const propertyTypes = {
+  Residential: [
+    'Apartment',
+    'Villa',
+    'Row House',
+    'Independent House',
+    'Bungalow',
+    'Penthouse',
+    'Studio Apartment',
+    'Duplex',
+  ],
 
+  Commercial: [
+    'Office',
+    'Shop',
+    'Showroom',
+    'Warehouse',
+    'Industrial Shed',
+    'Commercial Building',
+    'Co-working Space',
+  ],
+
+  Land: [
+    'Residential Plot',
+    'Commercial Plot',
+    'Agricultural Land',
+    'Non-Agricultural (NA) Land',
+    'Farm Land',
+    'Industrial Plot',
+  ],
+
+  International: [
+    'Apartment',
+    'Villa',
+    'Townhouse',
+    'Penthouse',
+    'Office',
+    'Land',
+  ],
+};
 export default function AddProject() {
   const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
 
   const [form, setForm] = useState({
+    category: 'Residential',
+    propertyType: 'Apartment',
+    transactionType: 'Sale',
+    country: 'India',
+    state: 'Maharashtra',
     location: '',
     area: '',
     price: '',
     priceRange: '',
     configuration: '',
     carpetArea: '',
+    areaUnit: 'Sq.ft',
     possession: '',
     description: '',
     amenities: [] as string[],
@@ -148,6 +193,132 @@ export default function AddProject() {
 
       <div className="grid md:grid-cols-2 gap-6 max-w-4xl">
         <div>
+  <label className="text-muted-gray font-sans text-xs uppercase tracking-wider mb-1.5 block">
+    Property Category *
+  </label>
+
+  <select
+    className={inputClass}
+    value={form.category}
+    onChange={(e) => {
+  const category = e.target.value;
+
+  setForm((f) => ({
+    ...f,
+    category,
+    propertyType:
+      propertyTypes[
+        category as keyof typeof propertyTypes
+      ][0],
+  }));
+}}
+  >
+    <option value="Residential" className="bg-charcoal">
+      Residential
+    </option>
+
+    <option value="Commercial" className="bg-charcoal">
+      Commercial
+    </option>
+
+    <option value="Land" className="bg-charcoal">
+      Land
+    </option>
+
+    <option value="International" className="bg-charcoal">
+      International
+    </option>
+  </select>
+</div>
+<div>
+  <label className="text-muted-gray font-sans text-xs uppercase tracking-wider mb-1.5 block">
+    Property Type *
+  </label>
+
+  <select
+    className={inputClass}
+    value={form.propertyType}
+    onChange={(e) =>
+      setForm((f) => ({
+        ...f,
+        propertyType: e.target.value,
+      }))
+    }
+  >
+    {propertyTypes[
+      form.category as keyof typeof propertyTypes
+    ].map((type) => (
+      <option
+        key={type}
+        value={type}
+        className="bg-charcoal"
+      >
+        {type}
+      </option>
+    ))}
+  </select>
+</div>
+<div>
+  <label className="text-muted-gray font-sans text-xs uppercase tracking-wider mb-1.5 block">
+    Transaction Type *
+  </label>
+
+  <select
+    className={inputClass}
+    value={form.transactionType}
+    onChange={(e) =>
+      setForm((f) => ({
+        ...f,
+        transactionType: e.target.value,
+      }))
+    }
+  >
+    <option value="Sale">Sale</option>
+    <option value="Rent">Rent</option>
+    <option value="Lease">Lease</option>
+  </select>
+</div>
+<div>
+  <label className="text-muted-gray font-sans text-xs uppercase tracking-wider mb-1.5 block">
+    Country *
+  </label>
+
+  <select
+    className={inputClass}
+    value={form.country}
+    onChange={(e) =>
+      setForm((f) => ({
+        ...f,
+        country: e.target.value,
+      }))
+    }
+  >
+    <option value="India">India</option>
+    <option value="United Arab Emirates">United Arab Emirates</option>
+    <option value="United Kingdom">United Kingdom</option>
+  </select>
+</div>
+<div>
+  <label className="text-muted-gray font-sans text-xs uppercase tracking-wider mb-1.5 block">
+    State *
+  </label>
+
+  <select
+    className={inputClass}
+    value={form.state}
+    onChange={(e) =>
+      setForm((f) => ({
+        ...f,
+        state: e.target.value,
+      }))
+    }
+  >
+    <option value="Maharashtra">Maharashtra</option>
+    <option value="Dubai">Dubai</option>
+    <option value="England">England</option>
+  </select>
+</div>
+        <div>
           <label className="text-muted-gray font-sans text-xs uppercase tracking-wider mb-1.5 block">
             Project Location *
           </label>
@@ -214,18 +385,41 @@ export default function AddProject() {
         </div>
 
         <div>
-          <label className="text-muted-gray font-sans text-xs uppercase tracking-wider mb-1.5 block">
-            Carpet Area
-          </label>
-          <input
-            className={inputClass}
-            value={form.carpetArea}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, carpetArea: e.target.value }))
-            }
-            placeholder="650 – 1450 sq.ft"
-          />
-        </div>
+  <label className="text-muted-gray font-sans text-xs uppercase tracking-wider mb-1.5 block">
+    Carpet Area
+  </label>
+
+  <div className="flex gap-2">
+    <input
+      className={`${inputClass} flex-1`}
+      value={form.carpetArea}
+      onChange={(e) =>
+        setForm((f) => ({ ...f, carpetArea: e.target.value }))
+      }
+      placeholder="Enter Area"
+    />
+
+    <select
+      className={`${inputClass} w-36`}
+      value={form.areaUnit}
+      onChange={(e) =>
+        setForm((f) => ({
+          ...f,
+          areaUnit: e.target.value,
+        }))
+      }
+    >
+      <option value="Sq.ft">Sq.ft</option>
+      <option value="Sq.m">Sq.m</option>
+      <option value="Guntha">Guntha</option>
+      <option value="Acre">Acre</option>
+      <option value="Hectare">Hectare</option>
+      <option value="R">R</option>
+      <option value="Bigha">Bigha</option>
+      <option value="Cent">Cent</option>
+    </select>
+  </div>
+</div>
 
         <div>
           <label className="text-muted-gray font-sans text-xs uppercase tracking-wider mb-1.5 block">
