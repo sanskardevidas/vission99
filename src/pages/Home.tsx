@@ -65,6 +65,13 @@ useEffect(() => {
   transition={{ duration: 0.8, ease: "easeInOut" }}
 >
   <HeroSection />
+  <HowItWorksSection />
+  <CitySelectionSection />
+  <FeaturedExperiencesSection />
+  <VRExperienceSection />
+  <FounderSection />
+  <SuccessStoriesSection />
+  <BookExperienceSection />
 </motion.main>
     )}
   </>
