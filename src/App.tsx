@@ -14,6 +14,8 @@ import Register from './pages/Register';
 import Unauthorized from './pages/Unauthorized';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import Profile from './pages/Profile';
+import UserDashboard from './pages/dashboard/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function PublicLayout({ children }: { children: React.ReactNode }) {
@@ -38,6 +40,22 @@ export default function App() {
         <Route path="/forgot-password" element={<PublicLayout><ForgotPassword /></PublicLayout>} />
         <Route path="/reset-password" element={<PublicLayout><ResetPassword /></PublicLayout>} />
         <Route path="/unauthorized" element={<PublicLayout><Unauthorized /></PublicLayout>} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <PublicLayout><Profile /></PublicLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <PublicLayout><UserDashboard /></PublicLayout>
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/admin"

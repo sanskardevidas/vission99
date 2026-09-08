@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Building2, Eye, FileEdit, Users, MapPin, RotateC3d, PlusCircle, Upload } from 'lucide-react';
+import { Building2, Eye, FileEdit, Users, MapPin, PlusCircle, Upload } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getProjects, getLeads } from '../../utils/storage';
 import type { Project, Lead } from '../../types';
@@ -56,6 +56,14 @@ export default function Dashboard() {
     { icon: <Upload className="w-5 h-5" />, label: 'Upload VR Tour', path: '/admin/projects/add' },
     { icon: <Users className="w-5 h-5" />, label: 'View Leads', path: '/admin/leads' },
   ];
+
+  if (loading) {
+    return (
+      <div className="text-center py-16">
+        <p className="font-sans text-muted-gray">Loading dashboard...</p>
+      </div>
+    );
+  }
 
   return (
     <div>

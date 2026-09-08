@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  MapPin, Calendar, Ruler, FileText, Rotate3d, Phone,
-  Download, ArrowRight, ChevronLeft, ChevronRight, Heart,
-  Share2, Eye, Shield, CheckCircle, ArrowLeft,
+  MapPin, Rotate3d, Phone,
+  Download, ArrowRight,
+  Share2, Shield, CheckCircle, ArrowLeft,
 } from 'lucide-react';
 import { getProjectBySlug, getPublishedProjects } from '../utils/storage';
 import ProjectCard from '../components/ProjectCard';

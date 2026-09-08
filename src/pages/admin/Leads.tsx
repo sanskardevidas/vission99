@@ -50,15 +50,7 @@ export default function Leads() {
   const getStatusColor = (status: Lead['status']) => {
     return statusOptions.find((s) => s.value === status)?.color || 'bg-white/10 text-white';
   };
-  if (loading) {
-    return (
-      <div className="text-center py-16">
-        <p className="font-sans text-muted-gray">
-          Loading leads...
-        </p>
-      </div>
-    );
-  }
+
   useEffect(() => {
     const loadLeads = async () => {
       try {
@@ -78,6 +70,16 @@ export default function Leads() {
 
    loadLeads();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="text-center py-16">
+        <p className="font-sans text-muted-gray">
+          Loading leads...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div>

@@ -21,8 +21,10 @@ export default function LeadForm({ source = 'website', variant = 'book', onSucce
   budget: '',
 });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const lead: Lead = {
       id: Date.now().toString(),
@@ -37,9 +39,19 @@ export default function LeadForm({ source = 'website', variant = 'book', onSucce
       status: 'new',
       createdAt: new Date().toISOString(),
     };
-    addLead(lead);
-    setSubmitted(true);
-    onSuccess?.();
+
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      await addLead(lead);
+      setSubmitted(true);
+      onSuccess?.();
+    } catch (error) {
+      console.error('Failed to submit lead:', error);
+      setSubmitError('Something went wrong. Please try again or contact us directly.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const fields = variant === 'book'
@@ -118,13 +130,19 @@ export default function LeadForm({ source = 'website', variant = 'book', onSucce
 )}
         </div>
       ))}
+      {submitError && (
+        <p className="text-center text-red-400 font-sans text-sm">{submitError}</p>
+      )}
       <motion.button
         whileHover={{ y: -2 }}
         whileTap={{ scale: 0.98 }}
         type="submit"
-        className="w-full bg-champagne-gold text-deep-black font-sans font-semibold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-soft-gold hover:shadow-[0_0_30px_rgba(214,179,106,0.3)] transition-all duration-300"
+        disabled={submitting}
+        className="w-full bg-champagne-gold text-deep-black font-sans font-semibold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-soft-gold hover:shadow-[0_0_30px_rgba(214,179,106,0.3)] transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {variant === 'book' ? 'Book My Experience' : 'Get Expert Callback'}
+        {submitting
+          ? 'Submitting...'
+          : variant === 'book' ? 'Book My Experience' : 'Get Expert Callback'}
         <ArrowRight className="w-4 h-4" />
       </motion.button>
       <p className="text-center text-muted-gray font-sans text-xs">

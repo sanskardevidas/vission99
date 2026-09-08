@@ -38,7 +38,7 @@ useEffect(() => {
         setProjects(data);
 
         if (data.length > 0) {
-          setActiveProjectId(data[0].id);
+          setActiveProjectId(data[0].id ?? null);
         }
       } else {
         setProjects([]);
@@ -107,7 +107,7 @@ const activeProject = useMemo(() => {
                   viewport={{ once: true, margin: '-30px' }}
                   transition={{ duration: 0.5, delay: i * 0.08, ease: 'easeOut' }}
                   whileHover={{ y: -6 }}
-                  onClick={() => setActiveProjectId(project.id)}
+                  onClick={() => setActiveProjectId(project.id ?? null)}
                   className={`group relative min-w-[300px] md:min-w-[380px] h-72 rounded-2xl overflow-hidden cursor-pointer shrink-0 transition-all duration-500 ${
                     activeProjectId === project.id ? 'ring-2 ring-champagne-gold' : ''
                   }`}
