@@ -49,6 +49,7 @@ export default function ProjectCard({
         ease: 'easeOut',
       }}
       whileHover={{ y: -8 }}
+      whileTap={{ scale: 0.97 }}
       className="group relative min-w-[320px] md:min-w-[380px] rounded-2xl overflow-hidden bg-charcoal border border-white/5 cursor-pointer shrink-0"
       onClick={() =>
         navigate(`/projects/${project.slug}`)
@@ -129,6 +130,7 @@ export default function ProjectCard({
 
         <motion.button
           whileHover={{ x: 4 }}
+          whileTap={{ scale: 0.96 }}
           className="w-full bg-champagne-gold text-deep-black font-semibold py-3 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition"
           onClick={(e) => {
             e.stopPropagation();

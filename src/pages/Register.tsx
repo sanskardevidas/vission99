@@ -1,5 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 
 export default function Register() {
@@ -49,7 +50,12 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-deep-black flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8"
+      >
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-deep-black">
             Create Account
@@ -129,7 +135,9 @@ export default function Register() {
             </div>
           )}
 
-          <button
+          <motion.button
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.97 }}
             type="submit"
             disabled={loading}
             className="w-full bg-champagne-gold text-deep-black font-semibold py-3 rounded-lg hover:opacity-90 transition disabled:opacity-50"
@@ -137,7 +145,7 @@ export default function Register() {
             {loading
               ? 'Creating Account...'
               : 'Create Account'}
-          </button>
+          </motion.button>
         </form>
 
         <div className="mt-6 text-center">
@@ -152,7 +160,7 @@ export default function Register() {
             Login
           </Link>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

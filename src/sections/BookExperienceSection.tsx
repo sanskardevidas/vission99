@@ -172,14 +172,17 @@ export default function BookExperienceSection() {
                 Contact Us
               </div>
 
-              <a
+              <motion.a
+                whileTap={{ scale: 0.96 }}
                 href="tel:+919593359799"
                 className="text-white font-sans text-sm block hover:text-champagne-gold transition"
               >
                 +91 95933 59799
-              </a>
+              </motion.a>
 
-              <a
+              <motion.a
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.96 }}
                 href="https://wa.me/919593359799"
                 target="_blank"
                 rel="noreferrer"
@@ -189,7 +192,7 @@ export default function BookExperienceSection() {
                 <span className="text-white font-sans text-sm">
                   Chat on WhatsApp
                 </span>
-              </a>
+              </motion.a>
             </div>
           </div>
         </motion.div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Heart } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -54,24 +55,32 @@ export default function FavoriteButton({
   }
 
   return (
-    <button
+    <motion.button
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.94 }}
       onClick={handleFavorite}
       disabled={loading}
-      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
+      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-300 disabled:opacity-60 ${
         favorite
           ? 'bg-red-500 text-white'
           : 'bg-white border border-gray-300 text-gray-700'
       }`}
     >
-      <Heart
-        className={`w-4 h-4 ${
-          favorite ? 'fill-current' : ''
-        }`}
-      />
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={favorite ? 'on' : 'off'}
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+          className="inline-flex"
+        >
+          <Heart className={`w-4 h-4 ${favorite ? 'fill-current' : ''}`} />
+        </motion.span>
+      </AnimatePresence>
 
       {favorite
         ? 'Saved'
         : 'Save Property'}
-    </button>
+    </motion.button>
   );
 }

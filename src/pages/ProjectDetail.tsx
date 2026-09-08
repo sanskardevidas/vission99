@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin, Rotate3d, Phone,
   Download, ArrowRight,
@@ -103,30 +103,53 @@ export default function ProjectDetail() {
   return (
     <div className="min-h-screen bg-premium-ivory">
       <div className="relative h-[50vh] md:h-[60vh] bg-deep-black overflow-hidden">
-        <img
-          src={project.images?.[activeImage] || project.images?.[0]}
-          alt={project.name}
-          className="w-full h-full object-cover"
-        />
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={activeImage}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            src={project.images?.[activeImage] || project.images?.[0]}
+            alt={project.name}
+            className="w-full h-full object-cover"
+          />
+        </AnimatePresence>
         <div className="absolute inset-0 bg-gradient-to-t from-deep-black/80 via-deep-black/20 to-transparent" />
 
         <div className="absolute top-24 left-6 right-6 flex items-start justify-between z-10">
-          <button
+          <motion.button
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.9 }}
             onClick={() => navigate('/projects')}
             className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white/80 hover:bg-white/20 transition"
           >
             <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div className="flex gap-2">
+          </motion.button>
+          <motion.div
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex gap-2"
+          >
             <FavoriteButton projectId={project.slug} />
-            <button className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white/80 hover:bg-white/20 transition">
+            <motion.button
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.9 }}
+              className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white/80 hover:bg-white/20 transition"
+            >
               <Share2 className="w-5 h-5" />
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         </div>
 
         <div className="absolute bottom-6 left-6 right-6 z-10">
-          <div className="flex gap-2 mb-3">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex gap-2 mb-3"
+          >
             <span className={`px-3 py-1 rounded-full text-xs font-sans font-medium border ${badgeColors[project.badge] || 'bg-white/10 text-white border-white/20'}`}>
               {project.badge}
             </span>
@@ -135,18 +158,22 @@ export default function ProjectDetail() {
                 360° VR
               </span>
             )}
-          </div>
+          </motion.div>
           <div className="flex gap-3 overflow-x-auto">
             {(project.images || []).map((img, i) => (
-              <button
+              <motion.button
                 key={i}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 + i * 0.05 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={() => setActiveImage(i)}
                 className={`w-16 h-12 rounded-lg overflow-hidden shrink-0 border-2 transition ${
                   i === activeImage ? 'border-champagne-gold' : 'border-white/20'
                 }`}
               >
                 <img src={img} alt="" className="w-full h-full object-cover" />
-              </button>
+              </motion.button>
             ))}
           </div>
         </div>
@@ -191,6 +218,7 @@ export default function ProjectDetail() {
                 {project.vrAvailable && (
                   <motion.button
                     whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.96 }}
                     className="bg-champagne-gold text-deep-black font-sans font-semibold px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-soft-gold transition"
                   >
                     <Rotate3d className="w-4 h-4" /> Start VR Tour
@@ -199,12 +227,14 @@ export default function ProjectDetail() {
                 <CompareButton projectId={project.slug} />
                 <motion.button
                   whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.96 }}
                   className="bg-transparent border border-charcoal/20 text-charcoal font-sans font-semibold px-6 py-3 rounded-xl flex items-center gap-2 hover:border-champagne-gold hover:text-champagne-gold transition"
                 >
                   <Download className="w-4 h-4" /> Download Brochure
                 </motion.button>
                 <motion.button
                   whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.96 }}
                   onClick={() => {
                     alert(
                       'Site Visit Booking feature will be connected to Supabase in Phase 2.'
@@ -234,11 +264,19 @@ export default function ProjectDetail() {
             >
               <h2 className="font-serif text-2xl font-bold text-charcoal mb-4">Amenities</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {(project.amenities || []).map((a) => (
-                  <div key={a} className="flex items-center gap-2 bg-white rounded-xl border border-stone-gray/30 p-3">
+                {(project.amenities || []).map((a, i) => (
+                  <motion.div
+                    key={a}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: i * 0.03 }}
+                    whileHover={{ y: -2 }}
+                    className="flex items-center gap-2 bg-white rounded-xl border border-stone-gray/30 p-3"
+                  >
                     <CheckCircle className="w-4 h-4 text-champagne-gold shrink-0" />
                     <span className="font-sans text-sm text-charcoal">{a}</span>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </motion.div>
@@ -271,6 +309,7 @@ export default function ProjectDetail() {
               </p>
               <motion.button
                 whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.96 }}
                 className="bg-champagne-gold text-deep-black font-sans font-semibold px-6 py-3 rounded-xl inline-flex items-center gap-2 hover:bg-soft-gold transition"
               >
                 Start VR Tour <ArrowRight className="w-4 h-4" />

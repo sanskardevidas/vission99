@@ -69,7 +69,12 @@ export default function Projects() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="bg-white rounded-2xl border border-stone-gray/30 p-4 md:p-6 mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="bg-white rounded-2xl border border-stone-gray/30 p-4 md:p-6 mb-8"
+        >
           <div className="flex flex-col md:flex-row gap-3">
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-gray" />
@@ -112,14 +117,15 @@ export default function Projects() {
                 className="accent-champagne-gold"
               />
             </label>
-            <button
+            <motion.button
+              whileTap={{ scale: 0.94 }}
               onClick={resetFilters}
               className="px-4 py-3 text-muted-gray font-sans text-sm hover:text-charcoal transition flex items-center gap-1"
             >
               <X className="w-4 h-4" /> Reset
-            </button>
+            </motion.button>
           </div>
-        </div>
+        </motion.div>
 
         {loading ? (
         <div className="text-center py-20">
@@ -150,13 +156,15 @@ export default function Projects() {
           <p className="text-stone-gray font-sans text-sm mb-6">
             Book a free expert consultation.
           </p>
-          <motion.button
+          <motion.a
             whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.96 }}
+            href="/#book"
             className="bg-champagne-gold text-deep-black font-sans font-semibold px-8 py-3.5 rounded-xl inline-flex items-center gap-2 hover:bg-soft-gold hover:shadow-[0_0_25px_rgba(214,179,106,0.3)] transition-all duration-300"
           >
             Book Free Consultation
             <ArrowRight className="w-4 h-4" />
-          </motion.button>
+          </motion.a>
         </motion.div>
       </div>
     </div>

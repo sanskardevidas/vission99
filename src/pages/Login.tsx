@@ -1,6 +1,7 @@
 import loginBg from '../assets/IMG_9781.JPG.jpeg';
 import { useState, FormEvent, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -52,7 +53,12 @@ export default function Login() {
     >
       <div className="absolute inset-0 bg-deep-black/70" />
 
-      <div className="relative z-10 w-full max-w-md bg-deep-black/60 backdrop-blur-md border border-white/10 rounded-2xl p-8">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="relative z-10 w-full max-w-md bg-deep-black/60 backdrop-blur-md border border-white/10 rounded-2xl p-8"
+      >
         <h1 className="font-serif text-3xl font-bold mb-2 text-center text-white">
           Welcome Back
         </h1>
@@ -96,25 +102,28 @@ export default function Login() {
     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-12 text-white text-sm placeholder-muted-gray focus:border-champagne-gold focus:outline-none transition-colors"
   />
 
-  <button
+  <motion.button
+    whileTap={{ scale: 0.9 }}
     type="button"
     onClick={() => setShowPassword(!showPassword)}
     className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-champagne-gold"
   >
     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-  </button>
+  </motion.button>
 </div>
           </div>
 
           {error && <p className="text-red-400 text-sm">{error}</p>}
 
-          <button
+          <motion.button
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.97 }}
             type="submit"
             disabled={submitting}
             className="w-full bg-champagne-gold text-deep-black font-semibold rounded-xl px-3 py-3 hover:bg-soft-gold transition disabled:opacity-50"
           >
             {submitting ? 'Signing In...' : 'Login'}
-          </button>
+          </motion.button>
         </form>
 
         <p className="text-sm text-center mt-4 text-white/70">
@@ -123,7 +132,7 @@ export default function Login() {
             Register
           </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }

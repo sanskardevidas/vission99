@@ -99,8 +99,14 @@ export default function LeadForm({ source = 'website', variant = 'book', onSucce
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {fields.map((field) => (
-        <div key={field.key} className="relative">
+      {fields.map((field, i) => (
+        <motion.div
+          key={field.key}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: i * 0.05 }}
+          className="relative"
+        >
          <div className="absolute left-4 top-4 text-muted-gray">
   {field.icon}
 </div>
@@ -128,7 +134,7 @@ export default function LeadForm({ source = 'website', variant = 'book', onSucce
     className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-white font-sans text-sm placeholder-muted-gray focus:border-champagne-gold focus:outline-none transition-colors"
   />
 )}
-        </div>
+        </motion.div>
       ))}
       {submitError && (
         <p className="text-center text-red-400 font-sans text-sm">{submitError}</p>

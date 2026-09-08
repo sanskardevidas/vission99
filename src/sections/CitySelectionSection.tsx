@@ -90,15 +90,19 @@ const activeProject = useMemo(() => {
                   Add and publish real projects from the admin panel. After that, they will show here automatically.
                 </p>
                 <Link to="/admin/projects/add">
-                <button className="bg-champagne-gold text-deep-black font-sans font-semibold px-7 py-3 rounded-xl inline-flex items-center gap-2 hover:bg-soft-gold transition">
+                <motion.button
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.96 }}
+                  className="bg-champagne-gold text-deep-black font-sans font-semibold px-7 py-3 rounded-xl inline-flex items-center gap-2 hover:bg-soft-gold transition"
+                >
                   Add Project
                   <ArrowRight className="w-4 h-4" />
-                  </button>
+                  </motion.button>
                 </Link>
               </div>
               ) : (
           <>
-            <div className="flex gap-5 overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide">
+            <div className="flex gap-5 overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide snap-x-mandatory">
               {projects.map((project, i) => (
                 <motion.div
                   key={project.id}
@@ -107,8 +111,9 @@ const activeProject = useMemo(() => {
                   viewport={{ once: true, margin: '-30px' }}
                   transition={{ duration: 0.5, delay: i * 0.08, ease: 'easeOut' }}
                   whileHover={{ y: -6 }}
+                  whileTap={{ scale: 0.96 }}
                   onClick={() => setActiveProjectId(project.id ?? null)}
-                  className={`group relative min-w-[300px] md:min-w-[380px] h-72 rounded-2xl overflow-hidden cursor-pointer shrink-0 transition-all duration-500 ${
+                  className={`group relative min-w-[300px] md:min-w-[380px] h-72 rounded-2xl overflow-hidden cursor-pointer shrink-0 snap-center-item transition-all duration-500 ${
                     activeProjectId === project.id ? 'ring-2 ring-champagne-gold' : ''
                   }`}
                 >
@@ -183,6 +188,7 @@ const activeProject = useMemo(() => {
                 <Link to="/projects">
                   <motion.button
                     whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.96 }}
                     className="mt-8 bg-champagne-gold text-deep-black font-sans font-semibold px-8 py-3.5 rounded-xl flex items-center gap-2 hover:bg-soft-gold hover:shadow-[0_0_25px_rgba(214,179,106,0.3)] transition-all duration-300"
                   >
                     View All Projects

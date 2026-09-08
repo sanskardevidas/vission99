@@ -12,17 +12,24 @@ import SuccessStoriesSection from '../sections/SuccessStoriesSection';
 import BookExperienceSection from '../sections/BookExperienceSection';
 
 export default function Home() {
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(
+    () => sessionStorage.getItem('introPlayed') !== 'true'
+  );
 
 const isMobile = window.innerWidth <= 768;
 
+const dismissIntro = () => {
+  sessionStorage.setItem('introPlayed', 'true');
+  setShowIntro(false);
+};
+
 useEffect(() => {
-  const timer = setTimeout(() => {
-    setShowIntro(false);
-  }, 6000);
+  if (!showIntro) return;
+
+  const timer = setTimeout(dismissIntro, 6000);
 
   return () => clearTimeout(timer);
-}, []);
+}, [showIntro]);
  return (
   <>
     <AnimatePresence>
@@ -44,6 +51,7 @@ useEffect(() => {
           autoPlay
           muted
           playsInline
+          onEnded={dismissIntro}
           style={{
             width: "100%",
             height: "100%",
@@ -55,6 +63,17 @@ useEffect(() => {
             type="video/mp4"
           />
        </video>
+
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          whileTap={{ scale: 0.94 }}
+          onClick={dismissIntro}
+          className="absolute bottom-8 right-6 md:bottom-10 md:right-10 px-5 py-2.5 rounded-full border border-white/30 text-white font-sans text-xs md:text-sm tracking-wide bg-black/30 backdrop-blur-sm hover:border-champagne-gold hover:text-champagne-gold transition-colors"
+        >
+          Skip Intro
+        </motion.button>
       </motion.div>
       )}
     </AnimatePresence>

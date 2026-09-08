@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { Building2, Phone, Mail, MapPin, ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -20,11 +21,20 @@ export default function Footer() {
     <footer className="bg-deep-black border-t border-white/5">
       <div className="max-w-7xl mx-auto px-5 md:px-6 py-8 md:py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.5 }}
+          >
             <Link to="/" className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-champagne-gold/10 border border-champagne-gold/30 flex items-center justify-center shrink-0">
+              <motion.div
+                whileHover={{ scale: 1.06 }}
+                whileTap={{ scale: 0.92 }}
+                className="w-10 h-10 rounded-xl bg-champagne-gold/10 border border-champagne-gold/30 flex items-center justify-center shrink-0"
+              >
                 <Building2 className="w-5 h-5 text-champagne-gold" />
-              </div>
+              </motion.div>
 
               <div>
                 <p className="font-serif text-lg font-bold text-white leading-tight">
@@ -43,9 +53,15 @@ export default function Footer() {
             <p className="text-champagne-gold font-sans text-[10px] md:text-xs tracking-[0.15em] uppercase mt-4">
               Trusted Guidance Beyond Borders
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-2 gap-6 md:gap-8">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="grid grid-cols-2 gap-6 md:gap-8"
+          >
             <div>
               <h4 className="font-sans font-semibold text-white text-xs tracking-wide uppercase mb-4">
                 Quick Links
@@ -54,13 +70,15 @@ export default function Footer() {
               <ul className="space-y-2.5">
                 {quickLinks.map((link) => (
                   <li key={link.path}>
-                    <Link
-                      to={link.path}
-                      className="text-stone-gray font-sans text-sm hover:text-champagne-gold transition-colors inline-flex items-center gap-2"
-                    >
-                      <ArrowUpRight className="w-3 h-3" />
-                      {link.label}
-                    </Link>
+                    <motion.div whileTap={{ scale: 0.95 }} className="inline-block">
+                      <Link
+                        to={link.path}
+                        className="text-stone-gray font-sans text-sm hover:text-champagne-gold transition-colors inline-flex items-center gap-2"
+                      >
+                        <ArrowUpRight className="w-3 h-3" />
+                        {link.label}
+                      </Link>
+                    </motion.div>
                   </li>
                 ))}
               </ul>
@@ -79,9 +97,14 @@ export default function Footer() {
                 ))}
               </ul>
             </div>
-          </div>
+          </motion.div>
 
-          <div>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
             <h4 className="font-sans font-semibold text-white text-xs tracking-wide uppercase mb-4">
               Contact
             </h4>
@@ -107,19 +130,27 @@ export default function Footer() {
               </li>
             </ul>
 
-            <a
+            <motion.a
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.95 }}
               href="#book"
               className="mt-5 inline-flex items-center gap-2 bg-champagne-gold text-deep-black font-sans font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-soft-gold transition"
             >
               Schedule Consultation
               <ArrowUpRight className="w-4 h-4" />
-            </a>
-          </div>
+            </motion.a>
+          </motion.div>
         </div>
       </div>
 
       <div className="border-t border-white/5 py-4">
-        <div className="max-w-7xl mx-auto px-5 md:px-6 flex flex-col md:flex-row items-center justify-between gap-2">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="max-w-7xl mx-auto px-5 md:px-6 flex flex-col md:flex-row items-center justify-between gap-2"
+        >
           <p className="text-muted-gray font-sans text-[11px] text-center">
             © 2026 Vission99 Global Real Estate Advisory. All rights reserved.
           </p>
@@ -135,7 +166,7 @@ export default function Footer() {
               RERA Disclaimer
             </span>
           </div>
-        </div>
+        </motion.div>
       </div>
     </footer>
   );

@@ -17,6 +17,7 @@ export default function LocationCard({ location, index = 0, active, onClick }: L
       viewport={{ once: true, margin: '-30px' }}
       transition={{ duration: 0.5, delay: index * 0.08, ease: 'easeOut' }}
       whileHover={{ y: -6 }}
+      whileTap={{ scale: 0.96 }}
       onClick={onClick}
       className={`group relative min-w-[260px] md:min-w-[240px] h-72 rounded-2xl overflow-hidden cursor-pointer shrink-0 transition-all duration-500 ${
         active ? 'ring-2 ring-champagne-gold' : ''

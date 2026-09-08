@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Eye, GitCompare, Shield, BadgePercent, ArrowRight } from 'lucide-react';
 import SectionHeader from '../components/SectionHeader';
 import ProjectCard from '../components/ProjectCard';
@@ -57,7 +58,7 @@ export default function FeaturedExperiencesSection() {
         <div className="relative">
           <div
             ref={scrollRef}
-            className="flex gap-6 overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide scroll-smooth"
+            className="flex gap-6 overflow-x-auto pb-4 -mx-6 px-6 scrollbar-hide scroll-smooth snap-x-mandatory"
           >
             {loading ? (
               <div className="w-full text-center py-10">
@@ -65,38 +66,32 @@ export default function FeaturedExperiencesSection() {
               </div>
             ) : (
               projects.map((project, i) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  index={i}
-                />
+                <div key={project.id} className="shrink-0 snap-center-item">
+                  <ProjectCard project={project} index={i} />
+                </div>
               ))
             )}
           </div>
 
           <div className="hidden md:flex absolute -left-4 top-1/2 -translate-y-1/2 z-10">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.9 }}
               onClick={() => scroll('left')}
               className="w-12 h-12 rounded-full bg-white border border-stone-gray/30 flex items-center justify-center text-charcoal hover:border-champagne-gold hover:text-champagne-gold transition shadow-lg"
             >
               <ChevronLeft className="w-5 h-5" />
-            </button>
+            </motion.button>
           </div>
           <div className="hidden md:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10">
-            <button
-              onClick={() => scroll('right')}
-              className="w-12 h-12 rounded-full bg-white border border-stone-gray/30 flex items-center justify-center text-charcoal hover:border-champagne-gold hover:text-champagne-gold transition shadow-lg"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-          </div>
-          <div className="hidden md:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.9 }}
               onClick={() => scroll('right')}
               className="w-12 h-12 rounded-full bg-white border border-stone-gray/30 flex items-center justify-center text-charcoal hover:border-champagne-gold hover:text-champagne-gold transition shadow-lg"
             >
               <ChevronRight className="w-5 h-5" />
-            </button>
+            </motion.button>
           </div>
         </div>
 
@@ -126,13 +121,16 @@ export default function FeaturedExperiencesSection() {
         </motion.div>
 
         <div className="mt-10 text-center">
-          <motion.button
-            whileHover={{ y: -2 }}
-            className="bg-transparent border border-charcoal/20 text-charcoal font-sans font-semibold px-8 py-3.5 rounded-xl flex items-center gap-2 mx-auto hover:border-champagne-gold hover:text-champagne-gold transition-all duration-300"
-          >
-            View All Projects
-            <ArrowRight className="w-4 h-4" />
-          </motion.button>
+          <Link to="/projects">
+            <motion.button
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.96 }}
+              className="bg-transparent border border-charcoal/20 text-charcoal font-sans font-semibold px-8 py-3.5 rounded-xl flex items-center gap-2 mx-auto hover:border-champagne-gold hover:text-champagne-gold transition-all duration-300"
+            >
+              View All Projects
+              <ArrowRight className="w-4 h-4" />
+            </motion.button>
+          </Link>
         </div>
       </div>
     </section>

@@ -5,11 +5,16 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
   }
   body {
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+  button, a {
+    touch-action: manipulation;
   }
   ::selection {
     background-color: #D6B36A;
@@ -39,6 +44,19 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .snap-x-mandatory {
+    scroll-snap-type: x mandatory;
+  }
+  .snap-center-item {
+    scroll-snap-align: center;
   }
 }
 @keyframes testimonial-scroll {

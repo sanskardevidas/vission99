@@ -146,24 +146,28 @@ export default function HowItWorksSection() {
 
         <div className="hidden lg:block mt-12 relative">
           <div className="flex justify-end gap-3 mb-6">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.9 }}
               onClick={() => manualScroll('left')}
               className="w-11 h-11 rounded-full bg-white border border-stone-gray/30 flex items-center justify-center text-charcoal hover:border-champagne-gold hover:text-champagne-gold transition"
             >
               <ChevronLeft className="w-5 h-5" />
-            </button>
+            </motion.button>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.9 }}
               onClick={() => manualScroll('right')}
               className="w-11 h-11 rounded-full bg-white border border-stone-gray/30 flex items-center justify-center text-charcoal hover:border-champagne-gold hover:text-champagne-gold transition"
             >
               <ChevronRight className="w-5 h-5" />
-            </button>
+            </motion.button>
           </div>
 
           <div
             ref={scrollRef}
-            className="flex gap-6 overflow-x-auto scroll-smooth pb-6 scrollbar-hide"
+            className="flex gap-6 overflow-x-auto scroll-smooth pb-6 scrollbar-hide snap-x-mandatory"
           >
             {steps.map((step, i) => (
               <motion.div
@@ -173,7 +177,8 @@ export default function HowItWorksSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-30px' }}
                 transition={{ duration: 0.55, delay: i * 0.08, ease: 'easeOut' }}
-                className="relative shrink-0 basis-[calc(25%-18px)] min-w-[calc(25%-18px)]"
+                whileHover={{ y: -4 }}
+                className="relative shrink-0 basis-[calc(25%-18px)] min-w-[calc(25%-18px)] snap-center-item"
               >
                 <div
                   className={`bg-white rounded-2xl border p-6 min-h-[260px] transition-all duration-500 ${

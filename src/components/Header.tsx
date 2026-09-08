@@ -111,11 +111,21 @@ const handleLogout = async () => {
         <div className="max-w-7xl mx-auto px-5 md:px-6 h-full flex items-center justify-between">
           {/* LOGO */}
           <Link to="/" className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-champagne-gold/10 border border-champagne-gold/30 flex items-center justify-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              whileTap={{ scale: 0.92 }}
+              className="w-12 h-12 rounded-xl bg-champagne-gold/10 border border-champagne-gold/30 flex items-center justify-center"
+            >
               <Building2 className="w-6 h-6 text-champagne-gold" />
-            </div>
+            </motion.div>
 
-            <div>
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
               <h2 className="font-serif text-lg md:text-2xl font-bold text-white">
                 VISSION
                 <span className="text-champagne-gold">99</span>
@@ -124,59 +134,75 @@ const handleLogout = async () => {
               <p className="text-[10px] uppercase tracking-[0.2em] text-muted-gray">
                 AQAAR
               </p>
-            </div>
+            </motion.div>
           </Link>
 
           {/* Desktop Menu */}
           <nav className="hidden lg:flex items-center gap-8">
-            {navLinks.map((item) => (
-              <button
+            {navLinks.map((item, i) => (
+              <motion.button
                 key={item.label}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.1 + i * 0.05 }}
+                whileTap={{ scale: 0.94 }}
                 onClick={() => handleNavClick(item.href)}
                 className="text-white/75 hover:text-champagne-gold transition-colors font-medium"
               >
                 {item.label}
-              </button>
+              </motion.button>
             ))}
           </nav>
 
           {/* Right Side */}
           <div className="hidden lg:flex items-center gap-3">
-           
 
-            <a
+
+            <motion.a
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.92 }}
               href="tel:+919593359799"
               className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white hover:text-champagne-gold hover:border-champagne-gold transition"
             >
               <Phone className="w-5 h-5" />
-            </a>
+            </motion.a>
 
-            <button
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.45 }}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.96 }}
               onClick={() => handleNavClick('#book')}
               className="bg-champagne-gold text-deep-black font-semibold px-7 py-3 rounded-xl flex items-center gap-2 hover:bg-soft-gold transition"
             >
               Schedule Consultation
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </motion.button>
           </div>
 
           {/* Mobile */}
           <div className="flex lg:hidden items-center gap-3">
-            <a
+            <motion.a
+              whileTap={{ scale: 0.9 }}
               href="tel:+919593359799"
               className="w-11 h-11 rounded-full border border-white/10 flex items-center justify-center text-white"
             >
               <Phone className="w-5 h-5" />
-            </a>
+            </motion.a>
 
-          
 
-            <button
+
+            <motion.button
+              whileTap={{ scale: 0.9 }}
               onClick={() => setMobileOpen(true)}
               className="w-11 h-11 rounded-full border border-white/10 flex items-center justify-center text-white"
             >
               <Menu className="w-5 h-5" />
-            </button>
+            </motion.button>
           </div>
         </div>
       </motion.header>
@@ -197,12 +223,13 @@ const handleLogout = async () => {
                 <span className="text-champagne-gold">99</span>
               </h2>
 
-              <button
+              <motion.button
+                whileTap={{ scale: 0.88, rotate: 90 }}
                 onClick={() => setMobileOpen(false)}
                 className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white"
               >
                 <X className="w-5 h-5" />
-              </button>
+              </motion.button>
             </div>
 
             <nav className="flex flex-col items-center gap-8 mt-16">
@@ -213,39 +240,55 @@ const handleLogout = async () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
                 >
-                  <button
+                  <motion.button
+                    whileTap={{ scale: 0.92 }}
                     onClick={() => handleNavClick(item.href)}
                     className="font-serif text-3xl text-white hover:text-champagne-gold transition"
                   >
                     {item.label}
-                  </button>
+                  </motion.button>
                 </motion.div>
               ))}
 
               {user ? (
-                <button
+                <motion.button
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: navLinks.length * 0.05 }}
+                  whileTap={{ scale: 0.92 }}
                   onClick={handleLogout}
                   className="font-serif text-3xl text-white hover:text-champagne-gold transition"
                 >
                   Logout
-                </button>
+                </motion.button>
               ) : (
-                <Link
-                  to="/login"
-                  onClick={() => setMobileOpen(false)}
-                  className="font-serif text-3xl text-white hover:text-champagne-gold transition"
+                <motion.div
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: navLinks.length * 0.05 }}
+                  whileTap={{ scale: 0.92 }}
                 >
-                  Login
-                </Link>
+                  <Link
+                    to="/login"
+                    onClick={() => setMobileOpen(false)}
+                    className="font-serif text-3xl text-white hover:text-champagne-gold transition"
+                  >
+                    Login
+                  </Link>
+                </motion.div>
               )}
 
-              <button
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: navLinks.length * 0.05 + 0.1 }}
+                whileTap={{ scale: 0.94 }}
                 onClick={() => handleNavClick('#book')}
                 className="mt-4 bg-champagne-gold text-deep-black px-8 py-4 rounded-xl font-semibold flex items-center gap-2"
               >
                 Schedule Consultation
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </motion.button>
             </nav>
           </motion.div>
         )}

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { Star, Quote, Users, Building2, Clock, Shield, Award } from 'lucide-react';
 import SectionHeader from '../components/SectionHeader';
 import { testimonials } from '../data/testimonials';
@@ -31,8 +32,10 @@ export default function SuccessStoriesSection() {
 
        <div className="animate-testimonial-scroll gap-6 hover:[animation-play-state:paused]">
           {scrollingTestimonials.map((t, i) => (
-            <div
+            <motion.div
               key={`${t.id}-${i}`}
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.3 }}
               className="w-[330px] md:w-[520px] lg:w-[640px] bg-white rounded-2xl border border-stone-gray/30 overflow-hidden shrink-0"
             >
               <div className="relative h-40 md:h-48 overflow-hidden">
@@ -80,16 +83,29 @@ export default function SuccessStoriesSection() {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6">
-        <div className="mt-16 md:mt-20 bg-charcoal rounded-3xl p-6 md:p-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.6 }}
+          className="mt-16 md:mt-20 bg-charcoal rounded-3xl p-6 md:p-6"
+        >
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-            {bottomStats.map((s) => (
-              <div key={s.label} className="text-center">
+            {bottomStats.map((s, i) => (
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="text-center"
+              >
                 <div className="w-8 h-8 rounded-full bg-champagne-gold/10 flex items-center justify-center text-champagne-gold mx-auto mb-2">
                   {s.icon}
                 </div>
@@ -99,10 +115,10 @@ export default function SuccessStoriesSection() {
                 <p className="font-sans text-xs text-stone-gray">
                   {s.label}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

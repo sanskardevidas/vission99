@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Scale } from 'lucide-react';
 
 interface CompareButtonProps {
@@ -55,19 +56,31 @@ export default function CompareButton({
   }
 
   return (
-    <button
+    <motion.button
+      whileHover={{ y: -2 }}
+      whileTap={{ scale: 0.94 }}
       onClick={handleCompare}
-      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition ${
+      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-300 ${
         selected
           ? 'bg-blue-600 text-white'
           : 'bg-white border border-gray-300 text-gray-700'
       }`}
     >
-      <Scale className="w-4 h-4" />
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={selected ? 'on' : 'off'}
+          initial={{ scale: 0.6, rotate: -20, opacity: 0 }}
+          animate={{ scale: 1, rotate: 0, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+          className="inline-flex"
+        >
+          <Scale className="w-4 h-4" />
+        </motion.span>
+      </AnimatePresence>
 
       {selected
         ? 'Added To Compare'
         : 'Compare'}
-    </button>
+    </motion.button>
   );
 }
