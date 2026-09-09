@@ -148,19 +148,22 @@ function StepSlot({
   );
 }
 
+const loopedSteps = [...steps, steps[0]];
+
 function MobileStepCarousel() {
   const trackRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const resumeTimer = useRef<number>();
+  const settleTimer = useRef<number>();
 
-  const scrollToIndex = (i: number) => {
+  const scrollToIndex = (i: number, smooth = true) => {
     const card = cardRefs.current[i];
     const track = trackRef.current;
     if (!card || !track) return;
     const target = card.offsetLeft - (track.clientWidth - card.clientWidth) / 2;
-    track.scrollTo({ left: target, behavior: 'smooth' });
+    track.scrollTo({ left: target, behavior: smooth ? 'smooth' : 'auto' });
   };
 
   useEffect(() => {
@@ -168,7 +171,7 @@ function MobileStepCarousel() {
 
     const id = window.setInterval(() => {
       setActiveIndex((prev) => {
-        const next = (prev + 1) % steps.length;
+        const next = prev >= steps.length ? 0 : prev + 1;
         scrollToIndex(next);
         return next;
       });
@@ -202,6 +205,16 @@ function MobileStepCarousel() {
     });
 
     setActiveIndex(closest);
+
+    // Once scrolling settles on the trailing clone card, silently snap
+    // back to the real first card so the loop continues seamlessly.
+    window.clearTimeout(settleTimer.current);
+    settleTimer.current = window.setTimeout(() => {
+      if (closest === loopedSteps.length - 1) {
+        setActiveIndex(0);
+        scrollToIndex(0, false);
+      }
+    }, 150);
   };
 
   return (
@@ -212,11 +225,11 @@ function MobileStepCarousel() {
         onPointerDown={pauseThenResume}
         className="flex gap-3 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide -mx-6 px-[9%] md:px-[22%]"
       >
-        {steps.map((step, i) => {
+        {loopedSteps.map((step, i) => {
           const isActive = i === activeIndex;
           return (
             <div
-              key={step.num}
+              key={`${step.num}-${i}`}
               ref={(el) => {
                 cardRefs.current[i] = el;
               }}
@@ -260,7 +273,7 @@ function MobileStepCarousel() {
               setActiveIndex(i);
             }}
             className={`h-1.5 rounded-full transition-all duration-300 ${
-              i === activeIndex ? 'w-6 bg-champagne-gold' : 'w-1.5 bg-champagne-gold/25'
+              i === activeIndex % steps.length ? 'w-6 bg-champagne-gold' : 'w-1.5 bg-champagne-gold/25'
             }`}
           />
         ))}
