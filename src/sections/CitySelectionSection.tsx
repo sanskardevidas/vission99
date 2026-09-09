@@ -15,7 +15,7 @@ const whyItems = [
   {
     icon: <Building2 className="w-5 h-5" />,
     title: 'Verified Projects',
-    text: 'Only real projects added by you from admin panel will appear here.',
+    text: 'Every project listed here is personally verified for authenticity and pricing accuracy.',
   },
   {
     icon: <TrendingUp className="w-5 h-5" />,
@@ -68,9 +68,9 @@ const activeProject = useMemo(() => {
       <div className="max-w-7xl mx-auto px-6">
         <SectionHeader
           label="Explore Properties"
-          heading="Discover Verified Projects Added By You"
+          heading="Discover Our Verified Projects"
           goldText="Verified Projects"
-          subtext="Only real published projects added from your admin panel will appear here with their actual image, location, building name and pricing."
+          subtext="Every listed project is personally verified — real images, real location, real pricing, no surprises."
           light
         />
 
@@ -84,21 +84,21 @@ const activeProject = useMemo(() => {
               <div className="bg-white rounded-2xl border border-stone-gray/30 p-10 text-center">
                 <Building2 className="w-12 h-12 text-champagne-gold mx-auto mb-4" />
                 <h3 className="font-serif text-2xl font-bold text-charcoal mb-2">
-                  No Projects Added Yet
+                  New Projects Coming Soon
                 </h3>
                 <p className="font-sans text-sm text-muted-gray mb-6">
-                  Add and publish real projects from the admin panel. After that, they will show here automatically.
+                  We're adding verified projects shortly. In the meantime, get in touch and our team will help you directly.
                 </p>
-                <Link to="/admin/projects/add">
+                <a href="#book">
                 <motion.button
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.96 }}
                   className="bg-champagne-gold text-deep-black font-sans font-semibold px-7 py-3 rounded-xl inline-flex items-center gap-2 hover:bg-soft-gold transition"
                 >
-                  Add Project
+                  Talk To Our Team
                   <ArrowRight className="w-4 h-4" />
                   </motion.button>
-                </Link>
+                </a>
               </div>
               ) : (
           <>
