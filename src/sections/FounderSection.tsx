@@ -250,7 +250,7 @@ export default function FounderSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="bg-white rounded-2xl border border-stone-gray/30 p-4 md:p-8"
+            className="bg-charcoal rounded-2xl border border-white/5 p-4 md:p-8"
           >
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-champagne-gold/10 flex items-center justify-center text-champagne-gold mb-4 md:mb-5">
               <Megaphone className="w-5 h-5 md:w-6 md:h-6" />
@@ -260,11 +260,11 @@ export default function FounderSection() {
               Beyond Property Advisory
             </p>
 
-            <h3 className="font-serif text-xl md:text-3xl font-bold text-charcoal mb-3 md:mb-4">
+            <h3 className="font-serif text-xl md:text-3xl font-bold text-white mb-3 md:mb-4">
               Real Estate Marketing Solutions
             </h3>
 
-            <div className="space-y-2 md:space-y-3 font-sans text-xs md:text-sm text-muted-gray leading-relaxed">
+            <div className="space-y-2 md:space-y-3 font-sans text-xs md:text-sm text-stone-gray leading-relaxed">
               <p>
                 Beyond property consulting, we provide complete real estate marketing solutions
                 for developers and builders including social media management, digital advertising,
