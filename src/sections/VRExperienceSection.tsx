@@ -166,7 +166,7 @@ export default function VRExperienceSection() {
           </motion.div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+        <div className="flex items-stretch gap-4 md:gap-5 lg:gap-6 overflow-x-auto scroll-smooth scrollbar-hide snap-x-mandatory -mx-6 px-6 pb-2 mt-10 md:mt-14 lg:mt-16">
           {services.map((service, i) => (
             <motion.div
               key={service.title}
@@ -175,17 +175,17 @@ export default function VRExperienceSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.55, delay: i * 0.08 }}
               whileHover={{ y: -8 }}
-              className="bg-white rounded-2xl border border-white/10 p-6 hover:border-champagne-gold/60 transition-all duration-300"
+              className="bg-white rounded-2xl border border-white/10 p-4 sm:p-5 md:p-6 hover:border-champagne-gold/60 transition-all duration-300 shrink-0 snap-center-item w-[80%] md:w-[calc(50%-10px)] lg:w-[calc(25%-18px)]"
             >
-              <div className="w-12 h-12 rounded-xl bg-champagne-gold/10 text-champagne-gold flex items-center justify-center mb-5">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-champagne-gold/10 text-champagne-gold flex items-center justify-center mb-3 md:mb-5">
                 {service.icon}
               </div>
 
-              <h3 className="font-serif text-xl font-bold text-charcoal mb-3">
+              <h3 className="font-serif text-lg md:text-xl font-bold text-charcoal mb-2 md:mb-3">
                 {service.title}
               </h3>
 
-              <p className="font-sans text-sm text-muted-gray leading-relaxed">
+              <p className="font-sans text-xs md:text-sm text-muted-gray leading-relaxed">
                 {service.desc}
               </p>
             </motion.div>
