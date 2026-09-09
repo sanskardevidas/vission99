@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { motion, AnimatePresence, type PanInfo, type Variants } from 'framer-motion';
 import {
   Search,
   Building2,
@@ -13,6 +14,8 @@ import {
   RefreshCw,
   HeartHandshake,
   ArrowRight,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import SectionHeader from '../components/SectionHeader';
 
@@ -74,9 +77,116 @@ const trustItems = [
   { icon: <HeartHandshake className="w-5 h-5" />, label: 'End-to-End Support' },
 ];
 
-const rows = [steps.slice(0, 4), steps.slice(4, 8)];
+const AUTOPLAY_MS = 3200;
+const SWIPE_THRESHOLD = 60;
+
+const cardVariants: Variants = {
+  enter: (dir: number) => ({
+    x: dir > 0 ? 80 : -80,
+    opacity: 0,
+    scale: 0.85,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    scale: 1,
+  },
+  exit: (dir: number) => ({
+    x: dir > 0 ? -80 : 80,
+    opacity: 0,
+    scale: 0.85,
+  }),
+};
+
+function StepSlot({
+  step,
+  isCenter,
+  direction,
+}: {
+  step: (typeof steps)[number];
+  isCenter: boolean;
+  direction: number;
+}) {
+  return (
+    <div className="relative">
+      <AnimatePresence mode="popLayout" custom={direction} initial={false}>
+        <motion.div
+          key={step.num}
+          custom={direction}
+          variants={cardVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: 0.5, ease: 'easeInOut' }}
+          className={`rounded-2xl border p-5 md:p-6 min-h-[220px] md:min-h-[260px] flex flex-col transition-shadow duration-300 ${
+            isCenter
+              ? 'bg-charcoal border-white/10 shadow-[0_25px_60px_rgba(214,179,106,0.2)] md:scale-[1.05]'
+              : 'bg-white border-stone-gray/30 opacity-80 md:scale-[0.94]'
+          }`}
+        >
+          <div
+            className={`relative w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mb-4 md:mb-6 border-2 border-champagne-gold ${
+              isCenter ? 'bg-champagne-gold/15 text-champagne-gold animate-pulse-gold' : 'bg-champagne-gold/10 text-champagne-gold'
+            }`}
+          >
+            {step.icon}
+            <span className="absolute -top-2 -right-2 w-6 h-6 md:w-7 md:h-7 rounded-full bg-champagne-gold text-deep-black font-sans text-[9px] md:text-[10px] font-bold flex items-center justify-center">
+              {step.num}
+            </span>
+          </div>
+
+          <h4 className={`font-serif text-base md:text-xl font-bold mb-2 md:mb-3 leading-tight ${isCenter ? 'text-white' : 'text-charcoal'}`}>
+            {step.title}
+          </h4>
+
+          <p className={`font-sans text-xs md:text-sm leading-relaxed ${isCenter ? 'text-stone-gray' : 'text-muted-gray'}`}>
+            {step.text}
+          </p>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export default function HowItWorksSection() {
+  const [index, setIndex] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const [paused, setPaused] = useState(false);
+  const timerRef = useRef<number>();
+
+  const go = (dir: number) => {
+    setDirection(dir);
+    setIndex((prev) => (prev + dir + steps.length) % steps.length);
+  };
+
+  useEffect(() => {
+    if (paused) return;
+
+    timerRef.current = window.setInterval(() => {
+      setDirection(1);
+      setIndex((prev) => (prev + 1) % steps.length);
+    }, AUTOPLAY_MS);
+
+    return () => window.clearInterval(timerRef.current);
+  }, [paused]);
+
+  const handleManual = (dir: number) => {
+    go(dir);
+    setPaused(true);
+    window.setTimeout(() => setPaused(false), AUTOPLAY_MS * 2);
+  };
+
+  const handleDragEnd = (_e: unknown, info: PanInfo) => {
+    if (info.offset.x <= -SWIPE_THRESHOLD) {
+      handleManual(1);
+    } else if (info.offset.x >= SWIPE_THRESHOLD) {
+      handleManual(-1);
+    }
+  };
+
+  const prevIdx = (index - 1 + steps.length) % steps.length;
+  const nextIdx = (index + 1) % steps.length;
+
   return (
     <section id="how-it-works" className="bg-premium-ivory section-padding overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
@@ -88,94 +198,60 @@ export default function HowItWorksSection() {
           light
         />
 
-        <div className="hidden lg:block mt-14 space-y-6">
-          {rows.map((row, rowIndex) => (
-            <div key={rowIndex} className="relative grid grid-cols-4 gap-6">
-              <motion.div
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
-                className="absolute top-14 left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-champagne-gold/0 via-champagne-gold/50 to-champagne-gold/0 origin-left -z-10"
-              />
-
-              {row.map((step, i) => {
-                const globalIndex = rowIndex * 4 + i;
-                return (
-                  <motion.div
-                    key={step.num}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: '-40px' }}
-                    transition={{ duration: 0.5, delay: globalIndex * 0.07, ease: 'easeOut' }}
-                    whileHover={{ y: -6 }}
-                    className="relative"
-                  >
-                    <div className="bg-white rounded-2xl border border-stone-gray/30 p-6 min-h-[240px] transition-all duration-300 hover:border-champagne-gold/50 hover:shadow-[0_20px_50px_rgba(214,179,106,0.12)]">
-                      <div className="relative w-16 h-16 rounded-full bg-champagne-gold/10 border-2 border-champagne-gold flex items-center justify-center text-champagne-gold mb-6 animate-pulse-gold">
-                        {step.icon}
-                        <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-champagne-gold text-deep-black font-sans text-[10px] font-bold flex items-center justify-center">
-                          {step.num}
-                        </span>
-                      </div>
-
-                      <h4 className="font-serif text-xl font-bold text-charcoal mb-3 leading-tight">
-                        {step.title}
-                      </h4>
-
-                      <p className="font-sans text-sm text-muted-gray leading-relaxed">
-                        {step.text}
-                      </p>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-
-        <div className="lg:hidden mt-10 space-y-6 relative">
+        <div
+          className="relative mt-12 md:mt-16"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
           <motion.div
-            initial={{ scaleY: 0 }}
-            whileInView={{ scaleY: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.2, ease: 'easeOut' }}
-            className="absolute left-7 top-0 bottom-0 w-px bg-champagne-gold/30 origin-top"
-          />
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.15}
+            onDragEnd={handleDragEnd}
+            className="grid grid-cols-3 gap-3 md:gap-6 cursor-grab active:cursor-grabbing"
+          >
+            <StepSlot step={steps[prevIdx]} isCenter={false} direction={direction} />
+            <StepSlot step={steps[index]} isCenter direction={direction} />
+            <StepSlot step={steps[nextIdx]} isCenter={false} direction={direction} />
+          </motion.div>
 
-          {steps.map((step, i) => (
-            <motion.div
-              key={step.num}
-              initial={{ opacity: 0, x: -28 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: '-20px' }}
-              transition={{ duration: 0.45, delay: i * 0.06 }}
-              className="relative flex gap-5 items-start"
-            >
-              <div className="relative shrink-0">
-                <div className="w-14 h-14 rounded-full bg-champagne-gold/10 border-2 border-champagne-gold flex items-center justify-center text-champagne-gold animate-pulse-gold">
-                  {step.icon}
-                </div>
+          <motion.button
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => handleManual(-1)}
+            aria-label="Previous step"
+            className="hidden md:flex absolute -left-5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white border border-stone-gray/30 items-center justify-center text-charcoal hover:border-champagne-gold hover:text-champagne-gold transition shadow-lg"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </motion.button>
 
-                <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-champagne-gold text-deep-black font-sans text-[9px] font-bold flex items-center justify-center">
-                  {step.num}
-                </span>
-              </div>
+          <motion.button
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => handleManual(1)}
+            aria-label="Next step"
+            className="hidden md:flex absolute -right-5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white border border-stone-gray/30 items-center justify-center text-charcoal hover:border-champagne-gold hover:text-champagne-gold transition shadow-lg"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </motion.button>
 
-              <motion.div
-                whileHover={{ y: -2 }}
-                className="bg-white rounded-2xl border border-stone-gray/30 p-5 flex-1 transition-shadow duration-300 hover:shadow-[0_12px_30px_rgba(214,179,106,0.1)]"
-              >
-                <h4 className="font-serif text-lg font-bold text-charcoal mb-2">
-                  {step.title}
-                </h4>
-
-                <p className="font-sans text-sm text-muted-gray leading-relaxed">
-                  {step.text}
-                </p>
-              </motion.div>
-            </motion.div>
-          ))}
+          <div className="flex items-center justify-center gap-2 mt-6 md:mt-8">
+            {steps.map((step, i) => (
+              <button
+                key={step.num}
+                aria-label={`Go to step ${i + 1}`}
+                onClick={() => {
+                  setDirection(i > index ? 1 : -1);
+                  setIndex(i);
+                  setPaused(true);
+                  window.setTimeout(() => setPaused(false), AUTOPLAY_MS * 2);
+                }}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  i === index ? 'w-6 bg-champagne-gold' : 'w-1.5 bg-champagne-gold/25 hover:bg-champagne-gold/50'
+                }`}
+              />
+            ))}
+          </div>
         </div>
 
         <motion.div
