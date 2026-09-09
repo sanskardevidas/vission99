@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Search,
@@ -14,8 +13,6 @@ import {
   RefreshCw,
   HeartHandshake,
   ArrowRight,
-  ChevronLeft,
-  ChevronRight,
 } from 'lucide-react';
 import SectionHeader from '../components/SectionHeader';
 
@@ -77,62 +74,9 @@ const trustItems = [
   { icon: <HeartHandshake className="w-5 h-5" />, label: 'End-to-End Support' },
 ];
 
+const rows = [steps.slice(0, 4), steps.slice(4, 8)];
+
 export default function HowItWorksSection() {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [activeStep, setActiveStep] = useState(0);
-  const [autoCompleted, setAutoCompleted] = useState(false);
-
-  const scrollToStep = (index: number) => {
-    const container = scrollRef.current;
-    if (!container) return;
-
-    const card = container.querySelector<HTMLElement>('[data-step-card]');
-    if (!card) return;
-
-    const gap = 24;
-    const scrollAmount = (card.offsetWidth + gap) * index;
-
-    container.scrollTo({
-      left: scrollAmount,
-      behavior: 'smooth',
-    });
-  };
-
-  useEffect(() => {
-    if (autoCompleted) return;
-
-    const interval = window.setInterval(() => {
-      setActiveStep((prev) => {
-        if (prev >= steps.length - 4) {
-          window.clearInterval(interval);
-          setAutoCompleted(true);
-          return prev;
-        }
-
-        const next = prev + 1;
-        scrollToStep(next);
-        return next;
-      });
-    }, 1100);
-
-    return () => window.clearInterval(interval);
-  }, [autoCompleted]);
-
-  const manualScroll = (direction: 'left' | 'right') => {
-    const container = scrollRef.current;
-    if (!container) return;
-
-    const card = container.querySelector<HTMLElement>('[data-step-card]');
-    if (!card) return;
-
-    const amount = card.offsetWidth + 24;
-
-    container.scrollBy({
-      left: direction === 'left' ? -amount : amount,
-      behavior: 'smooth',
-    });
-  };
-
   return (
     <section id="how-it-works" className="bg-premium-ivory section-padding overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
@@ -144,71 +88,60 @@ export default function HowItWorksSection() {
           light
         />
 
-        <div className="hidden lg:block mt-12 relative">
-          <div className="flex justify-end gap-3 mb-6">
-            <motion.button
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => manualScroll('left')}
-              className="w-11 h-11 rounded-full bg-white border border-stone-gray/30 flex items-center justify-center text-charcoal hover:border-champagne-gold hover:text-champagne-gold transition"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => manualScroll('right')}
-              className="w-11 h-11 rounded-full bg-white border border-stone-gray/30 flex items-center justify-center text-charcoal hover:border-champagne-gold hover:text-champagne-gold transition"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </motion.button>
-          </div>
-
-          <div
-            ref={scrollRef}
-            className="flex gap-6 overflow-x-auto scroll-smooth pb-6 scrollbar-hide snap-x-mandatory"
-          >
-            {steps.map((step, i) => (
+        <div className="hidden lg:block mt-14 space-y-6">
+          {rows.map((row, rowIndex) => (
+            <div key={rowIndex} className="relative grid grid-cols-4 gap-6">
               <motion.div
-                key={step.num}
-                data-step-card
-                initial={{ opacity: 0, y: 35 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-30px' }}
-                transition={{ duration: 0.55, delay: i * 0.08, ease: 'easeOut' }}
-                whileHover={{ y: -4 }}
-                className="relative shrink-0 basis-[calc(25%-18px)] min-w-[calc(25%-18px)] snap-center-item"
-              >
-                <div
-                  className={`bg-white rounded-2xl border p-6 min-h-[260px] transition-all duration-500 ${
-                    i >= activeStep && i < activeStep + 4
-                      ? 'border-champagne-gold/50 shadow-[0_20px_50px_rgba(214,179,106,0.12)]'
-                      : 'border-stone-gray/30'
-                  }`}
-                >
-                  <div className="relative w-16 h-16 rounded-full bg-champagne-gold/10 border-2 border-champagne-gold flex items-center justify-center text-champagne-gold mb-6 animate-pulse-gold">
-                    {step.icon}
-                    <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-champagne-gold text-deep-black font-sans text-[10px] font-bold flex items-center justify-center">
-                      {step.num}
-                    </span>
-                  </div>
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
+                className="absolute top-14 left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-champagne-gold/0 via-champagne-gold/50 to-champagne-gold/0 origin-left -z-10"
+              />
 
-                  <h4 className="font-serif text-xl font-bold text-charcoal mb-3 leading-tight">
-                    {step.title}
-                  </h4>
+              {row.map((step, i) => {
+                const globalIndex = rowIndex * 4 + i;
+                return (
+                  <motion.div
+                    key={step.num}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: '-40px' }}
+                    transition={{ duration: 0.5, delay: globalIndex * 0.07, ease: 'easeOut' }}
+                    whileHover={{ y: -6 }}
+                    className="relative"
+                  >
+                    <div className="bg-white rounded-2xl border border-stone-gray/30 p-6 min-h-[240px] transition-all duration-300 hover:border-champagne-gold/50 hover:shadow-[0_20px_50px_rgba(214,179,106,0.12)]">
+                      <div className="relative w-16 h-16 rounded-full bg-champagne-gold/10 border-2 border-champagne-gold flex items-center justify-center text-champagne-gold mb-6 animate-pulse-gold">
+                        {step.icon}
+                        <span className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-champagne-gold text-deep-black font-sans text-[10px] font-bold flex items-center justify-center">
+                          {step.num}
+                        </span>
+                      </div>
 
-                  <p className="font-sans text-sm text-muted-gray leading-relaxed">
-                    {step.text}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                      <h4 className="font-serif text-xl font-bold text-charcoal mb-3 leading-tight">
+                        {step.title}
+                      </h4>
+
+                      <p className="font-sans text-sm text-muted-gray leading-relaxed">
+                        {step.text}
+                      </p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          ))}
         </div>
 
         <div className="lg:hidden mt-10 space-y-6 relative">
-          <div className="absolute left-7 top-0 bottom-0 w-px bg-champagne-gold/30" />
+          <motion.div
+            initial={{ scaleY: 0 }}
+            whileInView={{ scaleY: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.2, ease: 'easeOut' }}
+            className="absolute left-7 top-0 bottom-0 w-px bg-champagne-gold/30 origin-top"
+          />
 
           {steps.map((step, i) => (
             <motion.div
@@ -220,7 +153,7 @@ export default function HowItWorksSection() {
               className="relative flex gap-5 items-start"
             >
               <div className="relative shrink-0">
-                <div className="w-14 h-14 rounded-full bg-champagne-gold/10 border-2 border-champagne-gold flex items-center justify-center text-champagne-gold">
+                <div className="w-14 h-14 rounded-full bg-champagne-gold/10 border-2 border-champagne-gold flex items-center justify-center text-champagne-gold animate-pulse-gold">
                   {step.icon}
                 </div>
 
@@ -229,7 +162,10 @@ export default function HowItWorksSection() {
                 </span>
               </div>
 
-              <div className="bg-white rounded-2xl border border-stone-gray/30 p-5 flex-1">
+              <motion.div
+                whileHover={{ y: -2 }}
+                className="bg-white rounded-2xl border border-stone-gray/30 p-5 flex-1 transition-shadow duration-300 hover:shadow-[0_12px_30px_rgba(214,179,106,0.1)]"
+              >
                 <h4 className="font-serif text-lg font-bold text-charcoal mb-2">
                   {step.title}
                 </h4>
@@ -237,7 +173,7 @@ export default function HowItWorksSection() {
                 <p className="font-sans text-sm text-muted-gray leading-relaxed">
                   {step.text}
                 </p>
-              </div>
+              </motion.div>
             </motion.div>
           ))}
         </div>
@@ -250,8 +186,15 @@ export default function HowItWorksSection() {
           className="mt-16 md:mt-20 bg-white rounded-2xl border border-stone-gray/30 p-6 md:p-8"
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {trustItems.map((item) => (
-              <div key={item.label} className="flex items-center gap-3">
+            {trustItems.map((item, i) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="flex items-center gap-3"
+              >
                 <div className="w-10 h-10 rounded-lg bg-champagne-gold/10 flex items-center justify-center text-champagne-gold shrink-0">
                   {item.icon}
                 </div>
@@ -259,7 +202,7 @@ export default function HowItWorksSection() {
                 <span className="font-sans font-medium text-sm text-charcoal">
                   {item.label}
                 </span>
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>
