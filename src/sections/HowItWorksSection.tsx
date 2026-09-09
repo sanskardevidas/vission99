@@ -163,7 +163,7 @@ function MobileStepCarousel() {
     const track = trackRef.current;
     if (!card || !track) return;
     const target = card.offsetLeft - (track.clientWidth - card.clientWidth) / 2;
-    track.scrollTo({ left: target, behavior: smooth ? 'smooth' : 'auto' });
+    track.scrollTo({ left: target, behavior: smooth ? 'smooth' : 'instant' });
   };
 
   useEffect(() => {
