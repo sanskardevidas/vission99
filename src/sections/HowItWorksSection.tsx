@@ -148,6 +148,127 @@ function StepSlot({
   );
 }
 
+function MobileStepCarousel() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const resumeTimer = useRef<number>();
+
+  const scrollToIndex = (i: number) => {
+    const card = cardRefs.current[i];
+    const track = trackRef.current;
+    if (!card || !track) return;
+    const target = card.offsetLeft - (track.clientWidth - card.clientWidth) / 2;
+    track.scrollTo({ left: target, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    if (paused) return;
+
+    const id = window.setInterval(() => {
+      setActiveIndex((prev) => {
+        const next = (prev + 1) % steps.length;
+        scrollToIndex(next);
+        return next;
+      });
+    }, AUTOPLAY_MS);
+
+    return () => window.clearInterval(id);
+  }, [paused]);
+
+  const pauseThenResume = () => {
+    setPaused(true);
+    window.clearTimeout(resumeTimer.current);
+    resumeTimer.current = window.setTimeout(() => setPaused(false), AUTOPLAY_MS * 2.2);
+  };
+
+  const handleScroll = () => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const trackCenter = track.scrollLeft + track.clientWidth / 2;
+    let closest = 0;
+    let minDist = Infinity;
+
+    cardRefs.current.forEach((card, i) => {
+      if (!card) return;
+      const cardCenter = card.offsetLeft + card.clientWidth / 2;
+      const dist = Math.abs(cardCenter - trackCenter);
+      if (dist < minDist) {
+        minDist = dist;
+        closest = i;
+      }
+    });
+
+    setActiveIndex(closest);
+  };
+
+  return (
+    <div className="relative">
+      <div
+        ref={trackRef}
+        onScroll={handleScroll}
+        onPointerDown={pauseThenResume}
+        className="flex gap-3 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide -mx-6 px-[9%] md:px-[22%]"
+      >
+        {steps.map((step, i) => {
+          const isActive = i === activeIndex;
+          return (
+            <div
+              key={step.num}
+              ref={(el) => {
+                cardRefs.current[i] = el;
+              }}
+              className={`shrink-0 snap-center w-[82%] md:w-[56%] min-h-[300px] rounded-2xl border p-6 flex flex-col transition-colors duration-500 ${
+                isActive
+                  ? 'bg-charcoal border-white/10 shadow-[0_20px_50px_rgba(214,179,106,0.15)]'
+                  : 'bg-white border-stone-gray/30'
+              }`}
+            >
+              <div
+                className={`relative w-12 h-12 rounded-full flex items-center justify-center mb-4 border-2 border-champagne-gold transition-colors duration-500 ${
+                  isActive ? 'bg-champagne-gold/15 text-champagne-gold animate-pulse-gold' : 'bg-champagne-gold/10 text-champagne-gold'
+                }`}
+              >
+                {step.icon}
+                <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-champagne-gold text-deep-black font-sans text-[9px] font-bold flex items-center justify-center">
+                  {step.num}
+                </span>
+              </div>
+
+              <h4 className={`font-serif text-xl font-bold mb-2 leading-snug transition-colors duration-500 ${isActive ? 'text-white' : 'text-charcoal'}`}>
+                {step.title}
+              </h4>
+
+              <p className={`font-sans text-base leading-relaxed transition-colors duration-500 ${isActive ? 'text-stone-gray' : 'text-muted-gray'}`}>
+                {step.text}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="flex items-center justify-center gap-2 mt-6">
+        {steps.map((step, i) => (
+          <button
+            key={step.num}
+            aria-label={`Go to step ${i + 1}`}
+            onClick={() => {
+              pauseThenResume();
+              scrollToIndex(i);
+              setActiveIndex(i);
+            }}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              i === activeIndex ? 'w-6 bg-champagne-gold' : 'w-1.5 bg-champagne-gold/25'
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function HowItWorksSection() {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
@@ -198,8 +319,12 @@ export default function HowItWorksSection() {
           light
         />
 
+        <div className="lg:hidden mt-10">
+          <MobileStepCarousel />
+        </div>
+
         <div
-          className="relative mt-12 md:mt-16"
+          className="hidden lg:block relative mt-16"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
