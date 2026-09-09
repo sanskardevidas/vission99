@@ -5,7 +5,6 @@ import mobileVideo from "../assets/mobile.mp4";
 import HeroSection from '../sections/HeroSection';
 import HowItWorksSection from '../sections/HowItWorksSection';
 import CitySelectionSection from '../sections/CitySelectionSection';
-import FeaturedExperiencesSection from '../sections/FeaturedExperiencesSection';
 import VRExperienceSection from '../sections/VRExperienceSection';
 import FounderSection from '../sections/FounderSection';
 import SuccessStoriesSection from '../sections/SuccessStoriesSection';
@@ -86,7 +85,6 @@ useEffect(() => {
   <HeroSection />
   <HowItWorksSection />
   <CitySelectionSection />
-  <FeaturedExperiencesSection />
   <VRExperienceSection />
   <FounderSection />
   <SuccessStoriesSection />
