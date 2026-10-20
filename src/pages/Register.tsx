@@ -1,14 +1,16 @@
-import { useState, FormEvent } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect, FormEvent } from 'react';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useAuth } from '../context/AuthContext';
+import { ROLE_ROUTE, lookupReferrer, normalizeMobile, registerPartner } from '../partner/store';
 
 export default function Register() {
   const navigate = useNavigate();
 
-  const { signUp } = useAuth();
-
-  const [email, setEmail] = useState('');
+  const [searchParams] = useSearchParams();
+  const refId = searchParams.get('ref');
+  const [referrer, setReferrer] = useState<{ id: string; name: string } | null | undefined>(refId ? undefined : null);
+  const [fullName, setFullName] = useState('');
+  const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -16,36 +18,59 @@ export default function Register() {
   const [success, setSuccess] = useState('');
 
   const [loading, setLoading] = useState(false);
+  const [duplicate, setDuplicate] = useState(false);
+
+  // Referral link: the referrer is captured automatically from ?ref=
+  useEffect(() => {
+    if (!refId) return;
+    let live = true;
+    lookupReferrer(refId).then(r => { if (live) setReferrer(r); });
+    return () => { live = false; };
+  }, [refId]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
 
     setError('');
     setSuccess('');
+    setDuplicate(false);
+
+    if (!fullName.trim()) {
+      setError('Full name is required');
+      return;
+    }
+
+    if (!normalizeMobile(mobile)) {
+      setError('Enter a valid 10-digit Indian mobile number');
+      return;
+    }
+
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters');
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
-    setLoading(true);
-
-    const result = await signUp(email, password);
-
-    setLoading(false);
-
-    if (result.error) {
-      setError(result.error);
+    if (refId && referrer === null) {
+      setError('This referral link is not valid. Please ask your referrer for a new link.');
       return;
     }
 
-    setSuccess(
-      'Account created successfully. Please check your email and login.'
-    );
+    setLoading(true);
+    const result = await registerPartner({ name: fullName, mobile, password, refId: referrer?.id ?? null });
+    setLoading(false);
 
-    setTimeout(() => {
-      navigate('/login');
-    }, 2000);
+    if (!result.ok) {
+      setError(result.error);
+      setDuplicate(!!result.duplicate);
+      return;
+    }
+
+    navigate(ROLE_ROUTE[result.partner.role], { replace: true });
   }
 
   return (
@@ -66,24 +91,47 @@ export default function Register() {
           </p>
         </div>
 
+        {refId && referrer !== undefined && (
+          <div className={`mb-5 rounded-lg border p-3 text-sm ${referrer ? 'border-champagne-gold/50 bg-champagne-gold/10 text-deep-black' : 'border-red-200 bg-red-50 text-red-600'}`}>
+            {referrer
+              ? <>Referred by <strong>{referrer.name}</strong> ({referrer.id})</>
+              : 'This referral link is not valid.'}
+          </div>
+        )}
+
         <form
           onSubmit={handleSubmit}
           className="space-y-5"
         >
           <div>
             <label className="block text-sm font-medium mb-2">
-              Email Address
+              Full Name
             </label>
 
             <input
-              type="email"
-              value={email}
-              onChange={(e) =>
-                setEmail(e.target.value)
-              }
+              type="text"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
               required
               className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-champagne-gold focus:ring-2 focus:ring-champagne-gold/20"
-              placeholder="Enter your email"
+              placeholder="Enter your full name"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Mobile Number
+            </label>
+
+            <input
+              type="tel"
+              inputMode="tel"
+              autoComplete="username"
+              value={mobile}
+              onChange={(e) => setMobile(e.target.value)}
+              required
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-champagne-gold focus:ring-2 focus:ring-champagne-gold/20"
+              placeholder="10-digit mobile number"
             />
           </div>
 
@@ -99,7 +147,7 @@ export default function Register() {
                 setPassword(e.target.value)
               }
               required
-              minLength={6}
+              minLength={8}
               className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-champagne-gold focus:ring-2 focus:ring-champagne-gold/20"
               placeholder="Enter password"
             />
@@ -117,7 +165,7 @@ export default function Register() {
                 setConfirmPassword(e.target.value)
               }
               required
-              minLength={6}
+              minLength={8}
               className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-champagne-gold focus:ring-2 focus:ring-champagne-gold/20"
               placeholder="Confirm password"
             />
@@ -126,6 +174,7 @@ export default function Register() {
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg p-3">
               {error}
+              {duplicate && <> <Link to="/login" className="font-semibold underline">Go to Login</Link></>}
             </div>
           )}
 

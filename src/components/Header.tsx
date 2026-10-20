@@ -156,7 +156,14 @@ const handleLogout = async () => {
 
           {/* Right Side */}
           <div className="hidden lg:flex items-center gap-3">
-
+            {!user && (
+              <Link
+                to="/login"
+                className="px-6 py-3 rounded-xl border border-champagne-gold/60 text-champagne-gold font-semibold hover:bg-champagne-gold hover:text-deep-black transition"
+              >
+                Login
+              </Link>
+            )}
 
             <motion.a
               initial={{ opacity: 0 }}

@@ -23,3 +23,6 @@ dist-ssr
 .env
 .vercel
 .env*
+node_modules.nosync
+api/_server.mjs
+supabase/.temp
