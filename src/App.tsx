@@ -28,6 +28,7 @@ import AdminSales from './admin/Sales';
 import AdminPayments from './admin/Payments';
 import { Audit, Commissions, Customers, Projects as AdminProjects, Reports, SettingsPage, Users, Visits } from './admin/More';
 import ProtectedRoute from './components/ProtectedRoute';
+import RouteTitle from './components/RouteTitle';
 
 function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -42,6 +43,7 @@ function PublicLayout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <BrowserRouter>
+      <RouteTitle />
       <Routes>
         <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
         <Route path="/projects" element={<PublicLayout><Projects /></PublicLayout>} />
