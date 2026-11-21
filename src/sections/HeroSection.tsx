@@ -11,27 +11,28 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import heroImage from '../assets/hero.png';
+import { COMPANY_STATS as S } from '../data/stats';
 
 const stats = [
   {
     icon: <Building2 className="w-5 h-5" />,
-    value: '100+',
-    label: 'Verified Projects',
+    value: S.projects,
+    label: S.projectsLabel,
   },
   {
     icon: <Globe className="w-5 h-5" />,
-    value: '3',
-    label: 'Global Offices',
+    value: S.offices,
+    label: S.officesLabel,
   },
   {
     icon: <Users className="w-5 h-5" />,
-    value: '500+',
-    label: 'Happy Clients',
+    value: S.families,
+    label: S.familiesLabel,
   },
   {
     icon: <Star className="w-5 h-5" />,
-    value: '5★',
-    label: 'Trusted Service',
+    value: S.rating,
+    label: S.ratingLabel,
   },
 ];
 

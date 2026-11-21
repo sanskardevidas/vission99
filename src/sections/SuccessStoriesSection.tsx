@@ -1,17 +1,14 @@
 import { motion } from 'framer-motion';
-import { Star, Quote, Users, Building2, Clock, Shield, Award } from 'lucide-react';
+import { Star, Quote, Shield, Award } from 'lucide-react';
 import SectionHeader from '../components/SectionHeader';
 import { testimonials } from '../data/testimonials';
+import { COMPANY_STATS as S } from '../data/stats';
 
+// Only figures not already shown in the Hero / Founder sections, so numbers aren't repeated down the page.
 const bottomStats = [
-  { icon: <Users className="w-4 h-4" />, value: '500+', label: 'Families Assisted' },
-  { icon: <Building2 className="w-4 h-4" />, value: '20+', label: 'Builder Partnerships' },
-  { icon: <Clock className="w-4 h-4" />, value: '10+', label: 'Years of Experience' },
+  { icon: <Award className="w-4 h-4" />, value: S.rating, label: S.ratingLabel },
   { icon: <Shield className="w-4 h-4" />, value: '100%', label: 'Transparent Guidance' },
-  { icon: <Award className="w-4 h-4" />, value: '4.9/5', label: 'Client Satisfaction' },
 ];
-
-const scrollingTestimonials = [...testimonials, ...testimonials];
 
 export default function SuccessStoriesSection() {
   return (
@@ -26,23 +23,21 @@ export default function SuccessStoriesSection() {
         />
       </div>
 
-      <div className="relative mt-4 md:mt-8 overflow-hidden">
-        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-20 md:w-40 bg-gradient-to-r from-warm-ivory to-transparent z-10" />
-        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-20 md:w-40 bg-gradient-to-l from-warm-ivory to-transparent z-10" />
-
-       <div className="animate-testimonial-scroll gap-6 hover:[animation-play-state:paused]">
-          {scrollingTestimonials.map((t, i) => (
+      <div className="max-w-7xl mx-auto px-6 mt-4 md:mt-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {testimonials.map((t) => (
             <motion.div
-              key={`${t.id}-${i}`}
+              key={t.id}
               whileHover={{ y: -4 }}
               transition={{ duration: 0.3 }}
-              className="w-[330px] md:w-[520px] lg:w-[640px] bg-white rounded-2xl border border-stone-gray/30 overflow-hidden shrink-0"
+              className="bg-white rounded-2xl border border-stone-gray/30 overflow-hidden flex flex-col"
             >
-              <div className="relative h-40 md:h-48 overflow-hidden">
+              <div className="relative h-36 overflow-hidden">
                 <img
                   src={t.image}
                   alt={t.name}
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-white via-white/5 to-transparent" />
                 <span className="absolute top-2 left-3 px-2 py-1 rounded-full bg-champagne-gold/15 text-champagne-gold text-[10px] font-sans font-medium border border-champagne-gold/30">
@@ -50,10 +45,10 @@ export default function SuccessStoriesSection() {
                 </span>
               </div>
 
-              <div className="p-5 md:p-7">
+              <div className="p-5 flex flex-col flex-1">
                 <Quote className="w-5 h-5 text-champagne-gold/30 mb-3" />
 
-                <p className="font-sans text-sm md:text-base text-charcoal leading-relaxed mb-5">
+                <p className="font-sans text-sm text-charcoal leading-relaxed mb-5 flex-1">
                   &ldquo;{t.quote}&rdquo;
                 </p>
 
@@ -96,7 +91,7 @@ export default function SuccessStoriesSection() {
           transition={{ duration: 0.6 }}
           className="mt-16 md:mt-20 bg-charcoal rounded-3xl p-6 md:p-6"
         >
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+          <div className="grid grid-cols-2 gap-6 max-w-md mx-auto">
             {bottomStats.map((s, i) => (
               <motion.div
                 key={s.label}

@@ -29,6 +29,28 @@ import AdminPayments from './admin/Payments';
 import { Audit, Commissions, Customers, Projects as AdminProjects, Reports, SettingsPage, Users, Visits } from './admin/More';
 import ProtectedRoute from './components/ProtectedRoute';
 import RouteTitle from './components/RouteTitle';
+import Privacy from './pages/legal/Privacy';
+import Terms from './pages/legal/Terms';
+import ReraDisclaimer from './pages/legal/ReraDisclaimer';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+
+// Scroll to #anchor targets (e.g. /#book) on navigation, and to the top on ordinary route changes.
+function ScrollToHash() {
+  const { pathname, hash } = useLocation();
+  useEffect(() => {
+    if (!hash) { window.scrollTo(0, 0); return; }
+    const id = decodeURIComponent(hash.slice(1));
+    let tries = 0;
+    const t = setInterval(() => {
+      const el = document.getElementById(id);
+      if (el) { el.scrollIntoView({ behavior: 'smooth' }); clearInterval(t); }
+      else if (++tries > 20) clearInterval(t);
+    }, 100);
+    return () => clearInterval(t);
+  }, [pathname, hash]);
+  return null;
+}
 
 function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -44,6 +66,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <RouteTitle />
+      <ScrollToHash />
       <Routes>
         <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
         <Route path="/projects" element={<PublicLayout><Projects /></PublicLayout>} />
@@ -71,6 +94,9 @@ export default function App() {
         <Route path="/partner/register" element={<PublicLayout><Register /></PublicLayout>} />
         <Route path="/forgot-password" element={<PublicLayout><ForgotPassword /></PublicLayout>} />
         <Route path="/reset-password" element={<PublicLayout><ResetPassword /></PublicLayout>} />
+        <Route path="/privacy" element={<PublicLayout><Privacy /></PublicLayout>} />
+        <Route path="/terms" element={<PublicLayout><Terms /></PublicLayout>} />
+        <Route path="/rera-disclaimer" element={<PublicLayout><ReraDisclaimer /></PublicLayout>} />
         <Route path="/unauthorized" element={<PublicLayout><Unauthorized /></PublicLayout>} />
         <Route
           path="/profile"

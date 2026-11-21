@@ -15,7 +15,7 @@ export const testimonials: Testimonial[] = [
     location: 'Wakad',
     name: 'Amit Deshmukh',
     property: '2 BHK at Godrej Hillside, Wakad',
-    quote: 'Comparing projects side by side with full transparency made our decision so easy. Highly recommend Home Vision.',
+    quote: 'Comparing projects side by side with full transparency made our decision so easy. Highly recommend VISSION99 AQAAR.',
     avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=100',
     image: 'https://images.pexels.com/photos/1974596/pexels-photo-1974596.jpeg?auto=compress&cs=tinysrgb&w=600',
   },

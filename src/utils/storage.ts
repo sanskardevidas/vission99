@@ -28,6 +28,22 @@ export async function getPublishedProjects(): Promise<Project[]> {
   return data as Project[];
 }
 
+// Same query as getPublishedProjects, but failures are thrown so the UI can show an error + retry
+// instead of treating a failed request as "no projects".
+export async function fetchPublishedProjects(): Promise<Project[]> {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('status', 'published')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching published projects:', error);
+    throw error;
+  }
+  return (data ?? []) as Project[];
+}
+
 export async function getFeaturedProjects(): Promise<Project[]> {
   const { data, error } = await supabase
     .from('projects')

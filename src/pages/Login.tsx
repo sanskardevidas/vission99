@@ -10,6 +10,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<{ mobile?: string; password?: string }>({});
   const [submitting, setSubmitting] = useState(false);
 
   const navigate = useNavigate();
@@ -28,10 +29,11 @@ export default function Login() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError('');
-    if (!normalizeMobile(mobile)) {
-      setError('Enter a valid 10-digit Indian mobile number.');
-      return;
-    }
+    const errs: { mobile?: string; password?: string } = {};
+    if (!normalizeMobile(mobile)) errs.mobile = 'Enter a valid 10-digit mobile number.';
+    if (!password) errs.password = 'Enter your password.';
+    setFieldErrors(errs);
+    if (errs.mobile || errs.password) return;
     setSubmitting(true);
     const result = await signIn(mobile, password);
     setSubmitting(false);
@@ -108,54 +110,65 @@ export default function Login() {
               Enter your credentials to access your account
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} noValidate className="space-y-4">
               <div>
-                <label className="block mb-1 text-sm font-medium text-[#292929]">
+                <label htmlFor="login-mobile" className="block mb-1 text-sm font-medium text-[#292929]">
                   Mobile Number
                 </label>
                 <div className="relative">
                   <Phone size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#D9B66F]" />
                   <input
+                    id="login-mobile"
                     type="tel"
-                    inputMode="tel"
+                    inputMode="numeric"
                     autoComplete="username"
                     value={mobile}
                     onChange={(e) => setMobile(e.target.value)}
-                    required
                     placeholder="10-digit mobile number"
                     className={inputClass}
+                    aria-invalid={!!fieldErrors.mobile}
+                    aria-describedby={fieldErrors.mobile ? 'login-mobile-err' : undefined}
                   />
                 </div>
+                {fieldErrors.mobile && <p id="login-mobile-err" role="alert" className="mt-1 text-sm text-red-600">{fieldErrors.mobile}</p>}
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-[#292929]">
-                  Password
-                </label>
+                <div className="flex items-center justify-between">
+                  <label htmlFor="login-password" className="block mb-1 text-sm font-medium text-[#292929]">
+                    Password
+                  </label>
+                  <Link to="/forgot-password" className="mb-1 text-sm font-medium text-[#8a6a1f] hover:underline">
+                    Forgot password?
+                  </Link>
+                </div>
                 <div className="relative">
                   <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#D9B66F]" />
                   <input
+                    id="login-password"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     autoComplete="current-password"
                     onChange={(e) => setPassword(e.target.value)}
-                    required
                     placeholder="Enter your password"
-                    className={`${inputClass} pr-12`}
+                    className={`${inputClass} pr-14`}
+                    aria-invalid={!!fieldErrors.password}
+                    aria-describedby={fieldErrors.password ? 'login-password-err' : undefined}
                   />
                   <motion.button
                     whileTap={{ scale: 0.9 }}
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center text-[#292929]/60 hover:text-[#D9B66F]"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center text-[#292929]/60 hover:text-[#D9B66F]"
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </motion.button>
                 </div>
+                {fieldErrors.password && <p id="login-password-err" role="alert" className="mt-1 text-sm text-red-600">{fieldErrors.password}</p>}
               </div>
 
-              {error && <p className="text-red-600 text-sm">{error}</p>}
+              {error && <p role="alert" className="text-red-600 text-sm">{error}</p>}
 
               <motion.button
                 whileHover={{ y: -2 }}

@@ -136,6 +136,15 @@ export async function signIn(mobile: string, password: string):
   await refresh();
   return me ? { ok: true, partner: me } : { ok: false, error: 'Unable to load your account. Please try again.' };
 }
+// Forgot password: SMS OTP to the registered mobile, then OTP + new password in one call.
+export async function requestPasswordOtp(mobile: string): Promise<{ ok: true } | { ok: false; error: string }> {
+  const r = await api('POST', '/api/auth/forgot/request', { mobile });
+  return r.ok ? { ok: true } : { ok: false, error: r.message };
+}
+export async function resetPasswordWithOtp(mobile: string, otp: string, password: string): Promise<{ ok: true } | { ok: false; error: string }> {
+  const r = await api('POST', '/api/auth/forgot/reset', { mobile, otp, password });
+  return r.ok ? { ok: true } : { ok: false, error: r.message };
+}
 export async function signOut() {
   await api('POST', '/api/auth/logout', {});
   me = null;

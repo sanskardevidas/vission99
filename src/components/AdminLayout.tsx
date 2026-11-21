@@ -17,7 +17,7 @@ export default function AdminLayout() {
             <Building2 className="w-4 h-4 text-champagne-gold" />
           </div>
           <div>
-            <p className="font-serif text-sm font-bold text-white">HOME VISION</p>
+            <p className="font-serif text-sm font-bold text-white">VISSION99 AQAAR</p>
             <p className="text-[9px] text-muted-gray font-sans tracking-[0.12em] uppercase">Admin Panel</p>
           </div>
         </div>

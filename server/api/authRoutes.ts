@@ -1,4 +1,6 @@
+import { createHash, randomInt, timingSafeEqual } from 'node:crypto';
 import { db } from '../api/db.ts';
+import { sendOtpSms, smsConfigured } from './sms.ts';
 import { audit } from './audit.ts';
 import { PARTNER_COLS, fail, ok, route } from './router.ts';
 import {
@@ -62,6 +64,70 @@ route('POST', '/api/auth/login', 'none', async (c) => {
   await recordAttempt('partner', key, c.ip, true);
   const token = await createSession('partner', p.id);
   return ok({ ok: true, role: p.role }, [cookieHeader(COOKIE.partner, token, SESSION_TTL_S.partner, c.secure)]);
+});
+
+// ---------- Partner: forgot password (SMS OTP) ----------
+const OTP_TTL_MS = 10 * 60 * 1000;
+const OTP_MAX_ATTEMPTS = 5;
+const otpHash = (partnerId: string, code: string) => createHash('sha256').update(`${partnerId}:${code}`).digest('hex');
+const OTP_SENT = 'If this mobile number is registered, a 6-digit code has been sent by SMS.';
+
+route('POST', '/api/auth/forgot/request', 'none', async (c) => {
+  const mobile = normalizeMobile(c.body.mobile);
+  if (!mobile) return fail(400, 'invalid', { message: 'Enter a valid 10-digit Indian mobile number.' });
+  if (!smsConfigured() && (process.env.VERCEL || process.env.NODE_ENV === 'production')) {
+    return fail(503, 'sms_unavailable', { message: 'Password reset by SMS is not available right now. Please contact support.' });
+  }
+  if (await isThrottled('otp', mobile, c.ip, 3, 10)) return fail(429, 'throttled', { message: THROTTLED });
+  await recordAttempt('otp', mobile, c.ip, false);
+
+  const { data: p } = await db().from('partners').select('id, status').eq('mobile', mobile).maybeSingle();
+  if (p && p.status === 'Active') {
+    const code = String(randomInt(0, 1_000_000)).padStart(6, '0');
+    await db().from('password_reset_otps').update({ consumed: true }).eq('partner_id', p.id).eq('consumed', false);
+    const { error } = await db().from('password_reset_otps')
+      .insert({ partner_id: p.id, code_hash: otpHash(p.id, code), expires_at: new Date(Date.now() + OTP_TTL_MS).toISOString() });
+    if (error) throw new Error(error.message);
+    await sendOtpSms(mobile, code);
+  }
+  // Same response whether or not the number is registered (no account enumeration).
+  return ok({ ok: true, message: OTP_SENT });
+});
+
+route('POST', '/api/auth/forgot/reset', 'none', async (c) => {
+  const mobile = normalizeMobile(c.body.mobile);
+  const code = str(c.body.otp, 10);
+  const password = typeof c.body.password === 'string' ? c.body.password : '';
+  const BAD = 'Invalid or expired code. Please request a new one.';
+  if (!mobile || !/^\d{6}$/.test(code)) return fail(400, 'invalid', { message: BAD });
+  if (password.length < PARTNER_PASSWORD_MIN) return fail(400, 'invalid', { message: `Password must be at least ${PARTNER_PASSWORD_MIN} characters.` });
+  if (await isThrottled('otp-verify', mobile, c.ip, 5, 20)) return fail(429, 'throttled', { message: THROTTLED });
+
+  const { data: p } = await db().from('partners').select('id, status').eq('mobile', mobile).maybeSingle();
+  const { data: row } = p
+    ? await db().from('password_reset_otps').select('id, code_hash, attempts, expires_at')
+        .eq('partner_id', p.id).eq('consumed', false).order('created_at', { ascending: false }).limit(1).maybeSingle()
+    : { data: null };
+  if (!p || p.status !== 'Active' || !row) {
+    await recordAttempt('otp-verify', mobile, c.ip, false);
+    return fail(400, 'invalid_otp', { message: BAD });
+  }
+  const { data: claimed } = await db().rpc('claim_otp_attempt', { p_id: row.id, p_max: OTP_MAX_ATTEMPTS });
+  if (claimed !== true) {
+    await recordAttempt('otp-verify', mobile, c.ip, false);
+    return fail(400, 'invalid_otp', { message: BAD });
+  }
+  const match = timingSafeEqual(Buffer.from(row.code_hash, 'hex'), Buffer.from(otpHash(p.id, code), 'hex'));
+  if (!match) {
+    await recordAttempt('otp-verify', mobile, c.ip, false);
+    return fail(400, 'invalid_otp', { message: BAD });
+  }
+  await db().from('password_reset_otps').update({ consumed: true }).eq('id', row!.id);
+  await db().from('partners').update({ password_hash: await hashPassword(password) }).eq('id', p!.id);
+  await destroyAllSessions('partner', p!.id); // sign out every device
+  await recordAttempt('otp-verify', mobile, c.ip, true);
+  await audit({ actorType: 'partner', actorId: p!.id, action: 'partner.password_reset', entityType: 'partner', entityId: p!.id });
+  return ok();
 });
 
 route('POST', '/api/auth/logout', 'none', async (c) => {

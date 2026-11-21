@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import founderImage from '../assets/founder.jpg';
+import { COMPANY_STATS as S } from '../data/stats';
 import {
   Users,
   Building2,
@@ -12,10 +13,10 @@ import {
 } from 'lucide-react';
 
 const stats = [
-  { icon: <Users className="w-4 h-4 md:w-5 md:h-5" />, value: '500+', label: 'Families Assisted' },
-  { icon: <Building2 className="w-4 h-4 md:w-5 md:h-5" />, value: '20+', label: 'Builder Partnerships' },
-  { icon: <Globe2 className="w-4 h-4 md:w-5 md:h-5" />, value: '3', label: 'Global Offices' },
-  { icon: <Clock className="w-4 h-4 md:w-5 md:h-5" />, value: '10+', label: 'Years of Experience' },
+  { icon: <Users className="w-4 h-4 md:w-5 md:h-5" />, value: S.families, label: S.familiesLabel },
+  { icon: <Building2 className="w-4 h-4 md:w-5 md:h-5" />, value: S.builders, label: S.buildersLabel },
+  { icon: <Globe2 className="w-4 h-4 md:w-5 md:h-5" />, value: S.offices, label: S.officesLabel },
+  { icon: <Clock className="w-4 h-4 md:w-5 md:h-5" />, value: S.years, label: S.yearsLabel },
 ];
 
 const presence = [
