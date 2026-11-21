@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Building2, Phone, Mail, MapPin, ArrowUpRight, MessageCircle } from 'lucide-react';
+import { Building2, Phone, Mail, MapPin, ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const quickLinks = [
@@ -10,16 +10,10 @@ const quickLinks = [
 ];
 
 const services = [
-  { label: 'Property Advisory', path: '/#book' },
-  { label: 'Verified Projects', path: '/projects' },
-  { label: 'Dubai Investment', path: '/#book' },
-  { label: 'Marketing Solutions', path: '/#book' },
-];
-
-const legalLinks = [
-  { label: 'Privacy', path: '/privacy' },
-  { label: 'Terms', path: '/terms' },
-  { label: 'RERA Disclaimer', path: '/rera-disclaimer' },
+  'Property Advisory',
+  'Verified Projects',
+  'Dubai Investment',
+  'Marketing Solutions',
 ];
 
 export default function Footer() {
@@ -97,10 +91,8 @@ export default function Footer() {
 
               <ul className="space-y-2.5">
                 {services.map((service) => (
-                  <li key={service.label}>
-                    <Link to={service.path} className="text-stone-gray font-sans text-sm hover:text-champagne-gold transition-colors">
-                      {service.label}
-                    </Link>
+                  <li key={service} className="text-stone-gray font-sans text-sm">
+                    {service}
                   </li>
                 ))}
               </ul>
@@ -138,25 +130,15 @@ export default function Footer() {
               </li>
             </ul>
 
-            <div className="mt-5 flex flex-wrap items-center gap-3">
-              <Link
-                to="/#book"
-                className="inline-flex items-center gap-2 bg-champagne-gold text-deep-black font-sans font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-soft-gold transition"
-              >
-                Schedule Consultation
-                <ArrowUpRight className="w-4 h-4" />
-              </Link>
-              <a
-                href="https://wa.me/919593359799"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Chat with us on WhatsApp"
-                className="inline-flex items-center gap-2 border border-white/15 text-white font-sans text-sm px-4 py-2.5 rounded-xl hover:border-champagne-gold hover:text-champagne-gold transition"
-              >
-                <MessageCircle className="w-4 h-4" />
-                WhatsApp
-              </a>
-            </div>
+            <motion.a
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              href="#book"
+              className="mt-5 inline-flex items-center gap-2 bg-champagne-gold text-deep-black font-sans font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-soft-gold transition"
+            >
+              Schedule Consultation
+              <ArrowUpRight className="w-4 h-4" />
+            </motion.a>
           </motion.div>
         </div>
       </div>
@@ -174,11 +156,15 @@ export default function Footer() {
           </p>
 
           <div className="flex items-center gap-4">
-            {legalLinks.map((l) => (
-              <Link key={l.path} to={l.path} className="text-muted-gray font-sans text-[11px] hover:text-champagne-gold transition">
-                {l.label}
-              </Link>
-            ))}
+            <span className="text-muted-gray font-sans text-[11px] hover:text-champagne-gold cursor-pointer transition">
+              Privacy
+            </span>
+            <span className="text-muted-gray font-sans text-[11px] hover:text-champagne-gold cursor-pointer transition">
+              Terms
+            </span>
+            <span className="text-muted-gray font-sans text-[11px] hover:text-champagne-gold cursor-pointer transition">
+              RERA Disclaimer
+            </span>
           </div>
         </motion.div>
       </div>

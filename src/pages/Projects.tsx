@@ -1,8 +1,8 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Rotate3d, ArrowRight, X, RefreshCw, AlertTriangle } from 'lucide-react';
+import { Search, Rotate3d, ArrowRight, X } from 'lucide-react';
 import ProjectCard from '../components/ProjectCard';
-import { fetchPublishedProjects } from '../utils/storage';
+import { getPublishedProjects } from '../utils/storage';
 import { locations } from '../data/locations';
 import type { Project } from '../types';
 
@@ -13,20 +13,13 @@ export default function Projects() {
   const [vrOnly, setVrOnly] = useState(false);
   const [allProjects, setAllProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState(false);
 
-  const load = useCallback(() => {
-    let live = true;
-    setLoading(true);
-    setLoadError(false);
-    fetchPublishedProjects()
-      .then((data) => { if (live) setAllProjects(data); })
-      .catch(() => { if (live) setLoadError(true); })
-      .finally(() => { if (live) setLoading(false); });
-    return () => { live = false; };
+  useEffect(() => {
+    getPublishedProjects().then((data) => {
+      setAllProjects(data);
+      setLoading(false);
+    });
   }, []);
-
-  useEffect(() => load(), [load]);
 
   const filtered = useMemo(() => {
     return allProjects.filter((p) => {
@@ -135,41 +128,13 @@ export default function Projects() {
         </motion.div>
 
         {loading ? (
-          <div role="status" aria-live="polite" className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <span className="sr-only">Loading projects…</span>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-stone-gray/30 overflow-hidden animate-pulse">
-                <div className="h-48 bg-stone-gray/20" />
-                <div className="p-5 space-y-3">
-                  <div className="h-5 w-3/4 rounded bg-stone-gray/20" />
-                  <div className="h-4 w-1/2 rounded bg-stone-gray/20" />
-                  <div className="h-4 w-2/3 rounded bg-stone-gray/20" />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : loadError ? (
-          <div role="alert" className="text-center py-20">
-            <AlertTriangle className="w-10 h-10 text-champagne-gold mx-auto mb-4" />
-            <p className="font-serif text-2xl font-bold text-charcoal mb-2">We couldn't load projects</p>
-            <p className="font-sans text-sm text-muted-gray mb-6">Please check your connection and try again.</p>
-            <button
-              onClick={load}
-              className="inline-flex items-center gap-2 bg-champagne-gold text-deep-black font-sans font-semibold px-6 py-3 rounded-xl hover:bg-soft-gold transition"
-            >
-              <RefreshCw className="w-4 h-4" /> Retry
-            </button>
-          </div>
-        ) : allProjects.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="font-serif text-2xl font-bold text-charcoal mb-2">No projects are listed yet</p>
-            <p className="font-sans text-sm text-muted-gray">New projects are added regularly. Please check back soon.</p>
-          </div>
-        ) : filtered.length === 0 ? (
+        <div className="text-center py-20">
+        <p className="font-serif text-2xl font-bold text-charcoal mb-2">Loading projects...</p>
+        </div>
+        ) : filtered.length === 0 ?  (
           <div className="text-center py-20">
             <p className="font-serif text-2xl font-bold text-charcoal mb-2">No Projects Found</p>
-            <p className="font-sans text-sm text-muted-gray mb-4">Try adjusting your filters.</p>
-            <button onClick={resetFilters} className="font-sans text-sm font-semibold text-champagne-gold underline">Reset filters</button>
+            <p className="font-sans text-sm text-muted-gray">Try adjusting your filters.</p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
