@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit --allowImportingTsExtensions --module esnext --moduleResolution bundler --target es2022 --skipLibCheck --strict --types node api/index.ts server/api/*.ts",
     "test:api": "node --experimental-strip-types --test server/api/api.test.ts",
+    "test:sms": "node --experimental-strip-types server/scripts/test-sms.ts",
     "provision-admin": "node --experimental-strip-types server/scripts/provision-admin.ts",
     "build:api": "esbuild server/vercel-entry.ts --bundle --platform=node --target=node22 --format=esm --banner:js=\"import { createRequire as __cr } from 'node:module'; const require = __cr(import.meta.url);\" --outfile=api/_server.mjs --log-level=warning"
   },
